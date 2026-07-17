@@ -45,7 +45,8 @@ export function Header() {
         </nav>
         <Link
           href="/contact"
-          className="hidden min-h-11 items-center rounded-full bg-papyrus px-5 font-label text-[0.68rem] font-bold uppercase tracking-[0.2em] text-obsidian transition hover:bg-sahel xl:inline-flex"
+          aria-label="Partner with Meroestream"
+          className="hidden min-h-11 items-center rounded-full border border-sahel/70 bg-sahel px-5 font-label text-[0.68rem] font-bold uppercase tracking-[0.2em] text-obsidian shadow-[0_0_24px_rgba(232,180,74,0.18)] transition hover:bg-papyrus hover:text-obsidian lg:inline-flex"
         >
           Partner
         </Link>
