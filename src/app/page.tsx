@@ -1,65 +1,181 @@
 import Image from "next/image";
+import { ArrowDown } from "lucide-react";
+import { CinematicButton } from "@/components/cinematic-button";
+import { FilmCard } from "@/components/film-card";
+import { Reveal } from "@/components/interactive/reveal";
+import { SectionHeading } from "@/components/section-heading";
+import { PartnershipBenefits } from "@/components/sections/partnership-benefits";
+import { StatsBand } from "@/components/sections/stats-band";
+import { TheatreCard } from "@/components/theatre-card";
+import { asset, featuredFilms, projects, theatreProductions } from "@/lib/content";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <>
+      <section className="relative min-h-[92svh] overflow-hidden pt-20">
+        <video
+          className="absolute inset-0 h-full w-full object-cover"
+          autoPlay
+          muted
+          loop
+          playsInline
+          poster={asset.heroPoster}
+          aria-hidden="true"
+        >
+          <source src={asset.heroVideo} type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-gradient-to-r from-obsidian via-obsidian/70 to-obsidian/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-obsidian via-transparent to-obsidian/30" />
+        <div className="container-shell relative flex min-h-[calc(92svh-5rem)] items-end py-12 md:py-16">
+          <Reveal className="max-w-4xl">
+            <p className="label">Film · Documentary · Theatre</p>
+            <h1 className="mt-6 max-w-4xl font-serif text-6xl leading-[0.9] text-papyrus md:text-8xl lg:text-9xl">
+              Africa has always told its own{" "}
+              <span className="editorial">stories.</span>
+            </h1>
+            <p className="mt-7 max-w-2xl text-base leading-8 text-papyrus/72 md:text-lg">
+              Meroestream produces and curates African cinema, documentary,
+              music, and live theatre rooted in tradition, speaking to the world.
+            </p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+              <CinematicButton href="/portfolio">Explore Our Work</CinematicButton>
+              <CinematicButton href="/contact" variant="secondary">
+                Partner With Us
+              </CinematicButton>
+            </div>
+          </Reveal>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+        <a
+          href="#intro"
+          className="absolute bottom-6 right-6 inline-flex h-12 w-12 items-center justify-center rounded-full border border-papyrus/20 text-papyrus"
+          aria-label="Scroll to introduction"
+        >
+          <ArrowDown className="h-5 w-5" />
+        </a>
+      </section>
+
+      <section id="intro" className="bg-obsidian py-20 md:py-28">
+        <div className="container-shell grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <Reveal>
+            <SectionHeading
+              eyebrow="Introduction"
+              title={
+                <>
+                  Stories make us human.{" "}
+                  <span className="editorial">Ours is told with an African accent.</span>
+                </>
+              }
+              intro="Meroestream exists to widen the frame for African storytellers across film, documentary, theatre, and performance."
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </Reveal>
+          <Reveal delay={0.1}>
+            <div className="relative min-h-[24rem] overflow-hidden border border-papyrus/10 bg-papyrus/[0.035] md:min-h-[34rem]">
+              <Image
+                src={asset.collage}
+                alt="Meroestream project collage"
+                fill
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-obsidian/75 via-transparent" />
+              <div className="absolute bottom-6 left-6 right-6">
+                <p className="label">New release</p>
+                <p className="mt-2 font-serif text-4xl text-papyrus">
+                  The Iron River — Now streaming
+                </p>
+              </div>
+            </div>
+          </Reveal>
         </div>
-      </main>
-    </div>
+      </section>
+
+      <section className="bg-[#080705] py-20 md:py-28">
+        <div className="container-shell">
+          <SectionHeading
+            eyebrow="Featured work"
+            title={
+              <>
+                Cinema, stage, sound, <span className="editorial">and memory</span>
+              </>
+            }
+            intro="A focused selection from the growing Meroestream slate."
+          />
+          <div className="mt-12 grid gap-5 lg:grid-cols-3">
+            {projects.slice(0, 3).map((film) => (
+              <FilmCard key={film.slug} film={film} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-obsidian py-20 md:py-28">
+        <div className="container-shell">
+          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <SectionHeading
+              eyebrow="Theatre productions"
+              title={
+                <>
+                  Live stories with <span className="editorial">ritual force</span>
+                </>
+              }
+              intro="Stage work designed for bodies, music, language, and myth."
+            />
+            <CinematicButton href="/theatre" variant="secondary">
+              View Theatre
+            </CinematicButton>
+          </div>
+          <div className="mt-12 grid gap-5 lg:grid-cols-2">
+            {theatreProductions.slice(0, 2).map((production) => (
+              <TheatreCard key={production.title} production={production} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#090705] py-20 md:py-28">
+        <div className="container-shell">
+          <SectionHeading
+            eyebrow="Featured films"
+            title={
+              <>
+                On screen <span className="editorial">now</span>
+              </>
+            }
+            intro="Features, documentaries, and short films curated by the Meroestream editorial team."
+          />
+          <div className="mt-12 grid gap-5 lg:grid-cols-3">
+            {featuredFilms.map((film) => (
+              <FilmCard key={film.slug} film={film} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <StatsBand />
+
+      <section className="bg-obsidian py-20 md:py-28">
+        <div className="container-shell grid gap-10 md:grid-cols-[0.75fr_1fr] md:items-end">
+          <p className="label">Manifesto</p>
+          <blockquote className="font-serif text-5xl leading-[1.02] text-papyrus md:text-7xl">
+            We do not treat African culture as texture. We treat it as source,
+            structure, memory, and <span className="editorial">future.</span>
+          </blockquote>
+        </div>
+      </section>
+
+      <PartnershipBenefits />
+
+      <section className="bg-obsidian py-20 md:py-28">
+        <div className="container-shell border border-papyrus/10 bg-papyrus/[0.035] p-7 md:p-12">
+          <p className="label">Contact</p>
+          <div className="mt-5 grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
+            <h2 className="font-serif text-5xl leading-none text-papyrus md:text-7xl">
+              Ready to bring your story to the screen or stage?
+            </h2>
+            <CinematicButton href="/contact">Start a Conversation</CinematicButton>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
