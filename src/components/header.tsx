@@ -23,10 +23,10 @@ export function Header() {
       <div className="container-shell flex h-20 items-center justify-between gap-6">
         <Link href="/" className="group flex items-baseline gap-1">
           <span className="font-serif text-2xl text-sahel transition group-hover:text-papyrus">
-            Meroe
+            meroe
           </span>
           <span className="font-serif text-2xl italic text-papyrus/70">
-            stream
+            Stream
           </span>
         </Link>
         <nav aria-label="Main navigation" className="hidden items-center gap-1 lg:flex">

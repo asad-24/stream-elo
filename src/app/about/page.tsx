@@ -16,7 +16,7 @@ export default function AboutPage() {
       <section className="bg-papyrus pt-36 text-obsidian md:pt-44">
         <div className="container-shell pb-20 md:pb-28">
           <p className="label text-crimson">About Meroestream</p>
-          <h1 className="mt-6 max-w-5xl font-serif text-6xl leading-[0.92] md:text-8xl">
+          <h1 className="mt-6 max-w-5xl font-serif text-5xl leading-[0.96] md:text-7xl">
             More than entertainment:{" "}
             <span className="editorial text-crimson">rewiring culture</span>
           </h1>

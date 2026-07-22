@@ -42,7 +42,7 @@ function ProjectCard({ project }: { project: Project }) {
               {project.category}
             </span>
           </div>
-          <h3 className="mt-5 font-serif text-4xl leading-none text-papyrus md:text-5xl">
+          <h3 className="mt-5 font-serif text-3xl leading-tight text-papyrus md:text-4xl">
             {project.title}
           </h3>
           <p className="mt-5 text-sm leading-7 text-papyrus/66">

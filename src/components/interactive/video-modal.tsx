@@ -97,6 +97,21 @@ export function VideoModal({
                     onLoad={() => setLoaded(true)}
                     className="h-full w-full"
                   />
+                ) : video.type === "drive" ? (
+                  <video
+                    controls
+                    autoPlay
+                    playsInline
+                    poster={video.posterUrl}
+                    onCanPlay={() => setLoaded(true)}
+                    onError={() => setVideoError(true)}
+                    className="h-full w-full"
+                  >
+                    <source
+                      src={`/api/media/stream/${video.mediaId}`}
+                      type="video/mp4"
+                    />
+                  </video>
                 ) : (
                   <video
                     controls

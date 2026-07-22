@@ -11,7 +11,8 @@ export type ProjectStatus =
 export type VideoSource =
   | { type: "youtube"; url: string; label: string }
   | { type: "mp4"; url: string; label: string }
-  | { type: "hls"; url: string; label: string };
+  | { type: "hls"; url: string; label: string }
+  | { type: "drive"; mediaId: string; label: string; posterUrl?: string };
 
 export type Project = {
   title: string;

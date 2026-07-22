@@ -1,7 +1,7 @@
-import Image from "next/image";
 import { ArrowDown } from "lucide-react";
 import { CinematicButton } from "@/components/cinematic-button";
 import { FilmCard } from "@/components/film-card";
+import { IntroGallery } from "@/components/interactive/intro-gallery";
 import { Reveal } from "@/components/interactive/reveal";
 import { SectionHeading } from "@/components/section-heading";
 import { PartnershipBenefits } from "@/components/sections/partnership-benefits";
@@ -29,7 +29,7 @@ export default function Home() {
         <div className="container-shell relative flex min-h-[calc(92svh-5rem)] items-end py-12 md:py-16">
           <Reveal className="max-w-4xl">
             <p className="label">Film · Documentary · Theatre</p>
-            <h1 className="mt-6 max-w-4xl font-serif text-6xl leading-[0.9] text-papyrus md:text-8xl lg:text-9xl">
+            <h1 className="mt-6 max-w-4xl font-serif text-4xl leading-[0.98] text-papyrus sm:text-5xl md:text-6xl lg:text-7xl">
               Africa has always told its own{" "}
               <span className="editorial">stories.</span>
             </h1>
@@ -69,22 +69,26 @@ export default function Home() {
             />
           </Reveal>
           <Reveal delay={0.1}>
-            <div className="relative min-h-[24rem] overflow-hidden border border-papyrus/10 bg-papyrus/[0.035] md:min-h-[34rem]">
-              <Image
-                src={asset.collage}
-                alt="Meroestream project collage"
-                fill
-                sizes="(min-width: 1024px) 50vw, 100vw"
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-obsidian/75 via-transparent" />
-              <div className="absolute bottom-6 left-6 right-6">
-                <p className="label">New release</p>
-                <p className="mt-2 font-serif text-4xl text-papyrus">
-                  The Iron River — Now streaming
-                </p>
-              </div>
-            </div>
+            <IntroGallery
+              images={[
+                {
+                  src: "/intro-iron-river.svg",
+                  alt: "The Iron River poster artwork",
+                },
+                {
+                  src: "/intro-ticket-life.svg",
+                  alt: "Ticket To Life poster artwork",
+                },
+                {
+                  src: "/intro-double-whammy.svg",
+                  alt: "Double Whammy poster artwork",
+                },
+                {
+                  src: "/intro-palmwine.svg",
+                  alt: "The Palmwine Drinkard poster artwork",
+                },
+              ]}
+            />
           </Reveal>
         </div>
       </section>
@@ -156,7 +160,7 @@ export default function Home() {
       <section className="bg-obsidian py-20 md:py-28">
         <div className="container-shell grid gap-10 md:grid-cols-[0.75fr_1fr] md:items-end">
           <p className="label">Manifesto</p>
-          <blockquote className="font-serif text-5xl leading-[1.02] text-papyrus md:text-7xl">
+          <blockquote className="font-serif text-4xl leading-[1.04] text-papyrus md:text-6xl">
             We do not treat African culture as texture. We treat it as source,
             structure, memory, and <span className="editorial">future.</span>
           </blockquote>
@@ -169,7 +173,7 @@ export default function Home() {
         <div className="container-shell border border-papyrus/10 bg-papyrus/[0.035] p-7 md:p-12">
           <p className="label">Contact</p>
           <div className="mt-5 grid gap-8 md:grid-cols-[1fr_auto] md:items-end">
-            <h2 className="font-serif text-5xl leading-none text-papyrus md:text-7xl">
+            <h2 className="font-serif text-4xl leading-tight text-papyrus md:text-6xl">
               Ready to bring your story to the screen or stage?
             </h2>
             <CinematicButton href="/contact">Start a Conversation</CinematicButton>

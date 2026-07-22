@@ -70,7 +70,7 @@ export function SuccessStoriesPanel() {
             </div>
             <div className="p-7 md:p-10">
               <p className="label">Selected voice</p>
-              <h3 className="mt-4 font-serif text-5xl leading-none text-papyrus">
+              <h3 className="mt-4 font-serif text-4xl leading-tight text-papyrus">
                 {active.name}
               </h3>
               <p className="mt-3 text-sahel">{active.role}</p>

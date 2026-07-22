@@ -14,7 +14,7 @@ export default function ContactPage() {
       <section className="bg-papyrus pt-36 text-obsidian md:pt-44">
         <div className="container-shell pb-16 md:pb-24">
           <p className="label text-crimson">Contact</p>
-          <h1 className="mt-6 max-w-5xl font-serif text-6xl leading-[0.92] md:text-8xl">
+          <h1 className="mt-6 max-w-5xl font-serif text-5xl leading-[0.96] md:text-7xl">
             Let&apos;s make something{" "}
             <span className="editorial text-crimson">together</span>
           </h1>

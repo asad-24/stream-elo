@@ -41,6 +41,12 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "meroestream.com",
+        pathname: "/wp-content/uploads/**",
+      },
+      {
+        protocol: "https",
+        hostname: "www.meroestream.com",
+        pathname: "/wp-content/uploads/**",
       },
       {
         protocol: "https",
@@ -49,14 +55,6 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "img.youtube.com",
-      },
-      {
-        protocol: "https",
-        hostname: "drive.google.com",
-      },
-      {
-        protocol: "https",
-        hostname: "lh3.googleusercontent.com",
       },
     ],
   },

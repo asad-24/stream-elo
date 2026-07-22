@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200" role="img" aria-labelledby="title desc">
+  <title id="title">The Iron River poster artwork</title>
+  <desc id="desc">A local poster-style fallback image for The Iron River.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" x2="1" y1="0" y2="1">
+      <stop offset="0" stop-color="#1e3b4a"/>
+      <stop offset="0.48" stop-color="#6b4a2a"/>
+      <stop offset="1" stop-color="#d7a744"/>
+    </linearGradient>
+  </defs>
+  <rect width="900" height="1200" fill="#080705"/>
+  <rect x="55" y="55" width="790" height="1090" fill="url(#bg)"/>
+  <circle cx="680" cy="220" r="170" fill="#f0e8d8" opacity="0.18"/>
+  <path d="M95 780C240 700 330 855 470 770C590 700 690 690 805 735L805 1090H95Z" fill="#0e0c0a" opacity="0.55"/>
+  <path d="M95 850C260 780 400 940 565 835C650 780 735 785 805 840" fill="none" stroke="#f0e8d8" stroke-width="10" opacity="0.42"/>
+  <text x="450" y="540" fill="#f0e8d8" font-family="Georgia, serif" font-size="88" text-anchor="middle">THE IRON</text>
+  <text x="450" y="638" fill="#e8b44a" font-family="Georgia, serif" font-size="108" font-style="italic" text-anchor="middle">RIVER</text>
+  <text x="450" y="1028" fill="#f0e8d8" font-family="Arial, sans-serif" font-size="28" letter-spacing="9" text-anchor="middle">MEROESTREAM</text>
+</svg>

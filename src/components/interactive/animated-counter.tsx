@@ -40,7 +40,7 @@ export function AnimatedCounter({
       transition={{ duration: 0.7 }}
       className="border-y border-papyrus/10 py-7 text-center"
     >
-      <p className="font-serif text-7xl text-sahel md:text-8xl">{count}</p>
+      <p className="font-serif text-6xl text-sahel md:text-7xl">{count}</p>
       <p className="mt-2 font-label text-xs uppercase tracking-[0.22em] text-papyrus/55">
         {label}
       </p>

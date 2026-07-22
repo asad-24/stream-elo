@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="1200" viewBox="0 0 900 1200" role="img" aria-labelledby="title desc">
+  <title id="title">Ticket To Life poster artwork</title>
+  <desc id="desc">A local poster-style fallback image for Ticket To Life.</desc>
+  <rect width="900" height="1200" fill="#07090b"/>
+  <rect x="55" y="55" width="790" height="1090" fill="#12313d"/>
+  <path d="M55 350H845V900H55Z" fill="#e8b44a" opacity="0.18"/>
+  <circle cx="265" cy="610" r="115" fill="#c8893a"/>
+  <circle cx="450" cy="575" r="140" fill="#f0e8d8" opacity="0.9"/>
+  <circle cx="625" cy="620" r="118" fill="#8b1a1a"/>
+  <rect x="130" y="720" width="640" height="130" fill="#0e0c0a" opacity="0.72"/>
+  <text x="450" y="430" fill="#e8b44a" font-family="Arial Black, Arial, sans-serif" font-size="130" text-anchor="middle">TICKET</text>
+  <text x="450" y="525" fill="#f0e8d8" font-family="Georgia, serif" font-size="58" font-style="italic" text-anchor="middle">to life</text>
+  <text x="450" y="1018" fill="#f0e8d8" font-family="Arial, sans-serif" font-size="28" letter-spacing="9" text-anchor="middle">NOW STREAMING</text>
+</svg>

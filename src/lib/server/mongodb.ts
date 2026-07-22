@@ -52,5 +52,6 @@ export const collections = {
   galleryItems: "gallery_items",
   awardStatistics: "award_statistics",
   partnerBenefits: "partner_benefits",
+  downloadLogs: "download_logs",
   submissionLogs: "submission_logs",
 } as const;

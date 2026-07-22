@@ -23,7 +23,7 @@ export function TheatreCard({ production }: { production: TheatreProduction }) {
             {production.city}, {production.country}
           </span>
         </div>
-        <h3 className="mt-5 font-serif text-4xl leading-none text-papyrus">
+        <h3 className="mt-5 font-serif text-3xl leading-tight text-papyrus">
           {production.title}
         </h3>
         <p className="mt-2 text-sm text-sahel">{production.dates}</p>

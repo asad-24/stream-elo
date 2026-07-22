@@ -20,7 +20,7 @@ export function FilmCard({ film }: { film: Project }) {
           {film.video ? <VideoModal video={film.video} title={film.title} compact /> : null}
         </div>
         <p className="label mt-8 text-[0.62rem]">{film.category}</p>
-        <h3 className="mt-3 font-serif text-4xl leading-none text-papyrus">
+        <h3 className="mt-3 font-serif text-3xl leading-tight text-papyrus">
           {film.title}
         </h3>
         <dl className="mt-5 grid grid-cols-2 gap-3 text-xs text-papyrus/65">

@@ -68,7 +68,7 @@ export function BtsGallery() {
             transition={{ duration: 0.45 }}
           >
             <p className="label">Gallery</p>
-            <h2 className="mt-4 font-serif text-5xl text-papyrus">
+            <h2 className="mt-4 font-serif text-4xl text-papyrus">
               {project.title}
             </h2>
             <p className="mt-4 max-w-2xl text-papyrus/64">{project.details}</p>
