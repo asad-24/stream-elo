@@ -1,15 +1,20 @@
 import type { Metadata } from "next";
 import { FilmCard } from "@/components/film-card";
 import { SectionHeading } from "@/components/section-heading";
-import { featuredFilms, projects } from "@/lib/content";
+import { getProjectsContent } from "@/lib/content-service";
 
 export const metadata: Metadata = {
   title: "Featured Films",
   description: "Featured Meroestream films and documentary projects.",
 };
 
-export default function FilmsPage() {
-  const filmSlate = [...featuredFilms, ...projects.filter((project) => project.category === "Documentaries")];
+export const dynamic = "force-dynamic";
+
+export default async function FilmsPage() {
+  const projects = await getProjectsContent();
+  const filmSlate = projects.filter(
+    (project) => project.category === "Film" || project.category === "Documentaries",
+  );
 
   return (
     <section className="bg-[#090705] pt-36 md:pt-44">

@@ -21,12 +21,12 @@ export default async function AdminSettingsPage() {
     <AdminPage
       eyebrow="Settings"
       title="Site settings"
-      intro="Manage global settings such as contact email, public site URL, Drive folder status, and media upload limits."
+      intro="Manage global settings such as contact email, public site URL, Cloudflare R2 media status, and upload limits."
     >
       {missing.length ? (
         <AdminNotice tone="warning">
           {missing.length} required setting{missing.length === 1 ? " is" : "s are"} still
-          missing. Google Drive uploads will not work until Google auth is complete.
+          missing. R2 uploads will not work until Cloudflare media configuration is complete.
         </AdminNotice>
       ) : (
         <AdminNotice>Core environment settings are configured.</AdminNotice>

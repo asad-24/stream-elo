@@ -24,6 +24,10 @@ export async function GET(
     return new Response("Forbidden.", { status: 403 });
   }
 
+  if (media.source === "r2" && media.publicUrl) {
+    return Response.redirect(media.publicUrl, 307);
+  }
+
   if (media.source !== "google-drive" || !media.driveFileId) {
     return new Response("Image source is not available through this route.", {
       status: 404,

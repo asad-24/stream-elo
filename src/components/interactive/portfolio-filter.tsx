@@ -3,7 +3,11 @@
 import Image from "next/image";
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { projects, type ProjectCategory, type Project } from "@/lib/content";
+import {
+  projects as staticProjects,
+  type ProjectCategory,
+  type Project,
+} from "@/lib/content";
 import { StatusBadge } from "@/components/status-badge";
 import { VideoModal } from "@/components/interactive/video-modal";
 
@@ -89,11 +93,11 @@ function ProjectCard({ project }: { project: Project }) {
   );
 }
 
-export function PortfolioFilter() {
+export function PortfolioFilter({ projects = staticProjects }: { projects?: Project[] }) {
   const [active, setActive] = useState<ProjectCategory | "All">("All");
   const visible = useMemo(
     () => projects.filter((project) => active === "All" || project.category === active),
-    [active],
+    [active, projects],
   );
 
   return (

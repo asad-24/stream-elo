@@ -20,22 +20,22 @@ export default async function AdminDashboardPage() {
     (setting) =>
       setting.key === "MongoDB" ||
       setting.key === "Admin session" ||
-      setting.key === "Google auth" ||
-      setting.key.includes("Drive"),
+      setting.key === "Media provider" ||
+      setting.key.startsWith("R2 "),
   );
 
   return (
     <AdminPage
       eyebrow="Dashboard"
       title="Content and media overview"
-      intro="A practical control surface for projects, media, Drive status, and recent inquiries."
+      intro="A practical control surface for projects, media, R2 status, and recent inquiries."
     >
       {!dashboard.databaseReady ? (
         <AdminNotice tone="error">MongoDB is not available: {dashboard.error}</AdminNotice>
       ) : null}
       <AdminStatGrid cards={dashboard.cards} />
       <div className="mt-8 grid gap-5 xl:grid-cols-2">
-        <AdminCard title="Google Drive" eyebrow="Storage">
+        <AdminCard title="Cloudflare R2" eyebrow="Storage">
           <AdminTable
             columns={["Setting", "Value", "Status"]}
             rows={criticalSettings.map((setting) => [
@@ -45,7 +45,7 @@ export default async function AdminDashboardPage() {
               </span>,
               <StatusPill key={`${setting.key}-status`} value={setting.status} />,
             ])}
-            empty={<EmptyState title="No settings found" body="No Drive settings are available." />}
+            empty={<EmptyState title="No settings found" body="No R2 settings are available." />}
           />
         </AdminCard>
         <AdminCard title="Recent contact inquiries" eyebrow="Inbox">
@@ -81,7 +81,7 @@ export default async function AdminDashboardPage() {
             empty={
               <EmptyState
                 title="No media records yet"
-                body="Uploaded or imported Google Drive files will appear here."
+                body="Uploaded R2 files will appear here."
               />
             }
           />

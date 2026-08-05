@@ -18,7 +18,8 @@ Representative file:
 - Use optimized 1080p MP4 for normal web playback.
 - Use HLS adaptive streaming where available.
 - Keep 4K assets for archival/download or high-bandwidth hero moments only.
-- Serve video from CDN/object storage, not from the Next.js app server.
+- Serve video from Cloudflare R2 through the configured CDN custom domain, not
+  from the Next.js app server.
 - Use poster images for all videos.
 - Muted autoplay only for the hero.
 - Do not autoplay content videos.
@@ -40,6 +41,17 @@ The current video modal supports:
 
 ## Production CDN Candidates
 
-- Vercel Blob or another object storage/CDN provider for simple MP4 delivery.
+- Cloudflare R2 plus a custom CDN domain is the active implementation for public
+  MP4 delivery.
+- Vercel Blob or another object storage/CDN provider remains a possible future
+  alternative.
 - Cloudflare Stream, Mux, or Bunny Stream if adaptive streaming, thumbnails, and analytics become important.
 - Signed URLs are not required unless protected streaming becomes part of the product scope.
+
+## Cloudflare R2 Notes
+
+- Browser uploads use presigned URLs against the R2 S3 API hostname.
+- Public playback uses `R2_PUBLIC_BASE_URL`, for example
+  `https://cdn.meroestream.com`.
+- Large videos use multipart upload so failed parts can be retried without
+  restarting the entire file.

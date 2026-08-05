@@ -6,10 +6,12 @@ import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { btsProjects } from "@/lib/content";
 
-export function BtsGallery() {
+type BtsGalleryItem = (typeof btsProjects)[number];
+
+export function BtsGallery({ items = btsProjects }: { items?: BtsGalleryItem[] }) {
   const [projectIndex, setProjectIndex] = useState(0);
   const [mediaIndex, setMediaIndex] = useState<number | null>(null);
-  const project = btsProjects[projectIndex];
+  const project = items[projectIndex] ?? items[0] ?? btsProjects[0];
   const activeMedia = mediaIndex === null ? null : project.media[mediaIndex];
 
   useEffect(() => {
@@ -40,7 +42,7 @@ export function BtsGallery() {
   return (
     <div className="grid gap-8 lg:grid-cols-[0.38fr_1fr]">
       <div className="space-y-2">
-        {btsProjects.map((item, index) => (
+        {items.map((item, index) => (
           <button
             key={item.title}
             type="button"

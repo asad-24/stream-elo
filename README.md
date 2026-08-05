@@ -72,6 +72,7 @@ npm run format
 - `docs/production-readiness.md`
 - `docs/migration-report.md`
 - `docs/hosting-decision.md`
+- `docs/cloudflare-r2-media.md`
 - `docs/video-cdn-guide.md`
 - `docs/deployment-guide.md`
 - `docs/backup-restore.md`

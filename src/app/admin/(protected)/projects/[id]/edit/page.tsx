@@ -3,12 +3,18 @@ import { notFound, redirect } from "next/navigation";
 import { AdminPage } from "@/components/admin/admin-page";
 import { AdminCard, AdminNotice } from "@/components/admin/admin-widgets";
 import { getCurrentAdminUser } from "@/lib/server/admin-auth";
+import { getAdminMediaOptions } from "@/lib/server/admin-data";
 import { slugify } from "@/lib/server/media-validation";
 import { collections, getDb } from "@/lib/server/mongodb";
 
 export const dynamic = "force-dynamic";
 
 function stringValue(value: unknown) {
+  return typeof value === "string" ? value : "";
+}
+
+function idValue(value: unknown) {
+  if (value instanceof ObjectId) return value.toHexString();
   return typeof value === "string" ? value : "";
 }
 
@@ -25,9 +31,35 @@ async function updateProject(formData: FormData) {
   const status = String(formData.get("status") ?? "draft").trim();
   const shortDescription = String(formData.get("shortDescription") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
+  const posterMediaId = String(formData.get("posterMediaId") ?? "");
+  const coverMediaId = String(formData.get("coverMediaId") ?? "");
+  const videoMediaId = String(formData.get("videoMediaId") ?? "");
+  const galleryMediaIds = formData
+    .getAll("galleryMediaIds")
+    .map(String)
+    .filter((value) => ObjectId.isValid(value))
+    .map((value) => new ObjectId(value));
 
   if (!ObjectId.isValid(id)) notFound();
   if (!title) redirect(`/admin/projects/${id}/edit?error=missing-title`);
+
+  const mediaSet: Record<string, unknown> = { galleryMediaIds };
+  const mediaUnset: Record<string, ""> = {};
+  if (ObjectId.isValid(posterMediaId)) {
+    mediaSet.posterMediaId = new ObjectId(posterMediaId);
+  } else {
+    mediaUnset.posterMediaId = "";
+  }
+  if (ObjectId.isValid(coverMediaId)) {
+    mediaSet.coverMediaId = new ObjectId(coverMediaId);
+  } else {
+    mediaUnset.coverMediaId = "";
+  }
+  if (ObjectId.isValid(videoMediaId)) {
+    mediaSet.videoMediaId = new ObjectId(videoMediaId);
+  } else {
+    mediaUnset.videoMediaId = "";
+  }
 
   const db = await getDb();
   await db.collection(collections.projects).updateOne(
@@ -40,8 +72,10 @@ async function updateProject(formData: FormData) {
         status,
         shortDescription,
         description,
+        ...mediaSet,
         updatedAt: new Date(),
       },
+      ...(Object.keys(mediaUnset).length ? { $unset: mediaUnset } : undefined),
     },
   );
 
@@ -60,11 +94,18 @@ export default async function AdminEditProjectPage({
   if (!ObjectId.isValid(id)) notFound();
 
   const db = await getDb();
-  const project = await db.collection(collections.projects).findOne({
-    _id: new ObjectId(id),
-  });
+  const [project, imageOptions, videoOptions] = await Promise.all([
+    db.collection(collections.projects).findOne({
+      _id: new ObjectId(id),
+    }),
+    getAdminMediaOptions("image"),
+    getAdminMediaOptions("video"),
+  ]);
 
   if (!project) notFound();
+  const selectedGalleryIds = Array.isArray(project.galleryMediaIds)
+    ? project.galleryMediaIds.map(idValue)
+    : [];
 
   return (
     <AdminPage
@@ -142,6 +183,69 @@ export default async function AdminEditProjectPage({
                 defaultValue={stringValue(project.description)}
                 className="border border-papyrus/15 bg-obsidian px-4 py-3 text-papyrus"
               />
+            </label>
+            <div className="grid gap-4 md:grid-cols-3">
+              <label className="grid gap-2">
+                <span className="label">Poster image</span>
+                <select
+                  name="posterMediaId"
+                  defaultValue={idValue(project.posterMediaId)}
+                  className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus"
+                >
+                  <option value="">Fallback artwork</option>
+                  {imageOptions.map((image) => (
+                    <option key={image.id} value={image.id}>
+                      {image.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="grid gap-2">
+                <span className="label">Cover image</span>
+                <select
+                  name="coverMediaId"
+                  defaultValue={idValue(project.coverMediaId)}
+                  className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus"
+                >
+                  <option value="">Fallback artwork</option>
+                  {imageOptions.map((image) => (
+                    <option key={image.id} value={image.id}>
+                      {image.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="grid gap-2">
+                <span className="label">Video</span>
+                <select
+                  name="videoMediaId"
+                  defaultValue={idValue(project.videoMediaId)}
+                  className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus"
+                >
+                  <option value="">No video</option>
+                  {videoOptions.map((video) => (
+                    <option key={video.id} value={video.id}>
+                      {video.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <label className="grid gap-2">
+              <span className="label">Gallery images</span>
+              <select
+                name="galleryMediaIds"
+                multiple
+                size={Math.min(Math.max(imageOptions.length, 3), 8)}
+                defaultValue={selectedGalleryIds}
+                className="border border-papyrus/15 bg-obsidian px-4 py-3 text-papyrus"
+              >
+                {imageOptions.map((image) => (
+                  <option key={image.id} value={image.id}>
+                    {image.title}
+                  </option>
+                ))}
+              </select>
             </label>
             <button className="min-h-12 w-fit rounded-full bg-sahel px-5 font-label text-xs font-bold uppercase tracking-[0.18em] text-obsidian">
               Save changes

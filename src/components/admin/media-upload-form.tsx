@@ -1,45 +1,79 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import { UploadCloud } from "lucide-react";
-
-type FolderOption = {
-  label: string;
-  value: string;
-  mediaType: "image" | "video";
-};
 
 type UploadStep = "idle" | "initiating" | "uploading" | "saving" | "done" | "error";
 
+type R2UploadPart = {
+  partNumber: number;
+  uploadUrl: string;
+  start: number;
+  end: number;
+};
+
 type InitiateResponse =
-  | { ok: true; mediaId: string; uploadUrl: string }
+  | {
+      ok: true;
+      mediaId: string;
+      mode: "single";
+      uploadUrl: string;
+      publicUrl: string;
+    }
+  | {
+      ok: true;
+      mediaId: string;
+      mode: "multipart";
+      uploadId: string;
+      publicUrl: string;
+      partSize: number;
+      parts: R2UploadPart[];
+    }
   | { ok: false; error?: string; message?: string };
 
-type DriveUploadResponse = {
-  id?: string;
-  name?: string;
+type CompletedPart = {
+  partNumber: number;
+  etag: string;
 };
+
+async function uploadWithRetry(url: string, body: Blob, contentType?: string) {
+  let lastError: Error | null = null;
+
+  for (let attempt = 1; attempt <= 3; attempt += 1) {
+    try {
+      const response = await fetch(url, {
+        method: "PUT",
+        headers: contentType ? { "Content-Type": contentType } : undefined,
+        body,
+      });
+
+      if (!response.ok) {
+        throw new Error(`Upload failed with status ${response.status}.`);
+      }
+
+      return response.headers.get("etag")?.replace(/^"|"$/g, "") ?? "";
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error("Upload failed.");
+    }
+  }
+
+  throw lastError ?? new Error("Upload failed.");
+}
 
 export function MediaUploadForm({
   defaultMediaType = "video",
-  folderOptions,
 }: {
   defaultMediaType?: "image" | "video";
-  folderOptions: FolderOption[];
 }) {
   const [mediaType, setMediaType] = useState<"image" | "video">(defaultMediaType);
-  const [folderId, setFolderId] = useState("");
   const [step, setStep] = useState<UploadStep>("idle");
   const [message, setMessage] = useState("");
-
-  const visibleFolders = useMemo(
-    () => folderOptions.filter((folder) => folder.mediaType === mediaType),
-    [folderOptions, mediaType],
-  );
+  const [progress, setProgress] = useState(0);
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setMessage("");
+    setProgress(0);
 
     const data = new FormData(event.currentTarget);
     const file = data.get("file");
@@ -51,7 +85,7 @@ export function MediaUploadForm({
 
     try {
       setStep("initiating");
-      const initiate = await fetch("/api/admin/drive/upload/initiate", {
+      const initiate = await fetch("/api/admin/r2/upload/initiate", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -62,7 +96,6 @@ export function MediaUploadForm({
           mimeType: file.type || "application/octet-stream",
           size: file.size,
           mediaType,
-          folderId: folderId || undefined,
         }),
       });
       const initiateResult = (await initiate.json()) as InitiateResponse;
@@ -76,23 +109,33 @@ export function MediaUploadForm({
       }
 
       setStep("uploading");
-      const driveResponse = await fetch(initiateResult.uploadUrl, {
-        method: "PUT",
-        headers: {
-          "Content-Type": file.type || "application/octet-stream",
-        },
-        body: file,
-      });
+      let etag = "";
+      let parts: CompletedPart[] | undefined;
 
-      if (!driveResponse.ok) {
-        throw new Error(`Google Drive upload failed with status ${driveResponse.status}.`);
+      if (initiateResult.mode === "single") {
+        etag = await uploadWithRetry(
+          initiateResult.uploadUrl,
+          file,
+          file.type || "application/octet-stream",
+        );
+        setProgress(100);
+      } else {
+        const completed: CompletedPart[] = [];
+        let uploadedBytes = 0;
+
+        for (const part of initiateResult.parts) {
+          const blob = file.slice(part.start, part.end);
+          const partEtag = await uploadWithRetry(part.uploadUrl, blob);
+          uploadedBytes += blob.size;
+          completed.push({ partNumber: part.partNumber, etag: partEtag });
+          setProgress(Math.round((uploadedBytes / file.size) * 100));
+        }
+
+        parts = completed;
       }
 
-      const driveFile = (await driveResponse.json()) as DriveUploadResponse;
-      if (!driveFile.id) throw new Error("Google Drive did not return a file ID.");
-
       setStep("saving");
-      const complete = await fetch("/api/admin/drive/upload/complete", {
+      const complete = await fetch("/api/admin/r2/upload/complete", {
         method: "POST",
         headers: {
           Accept: "application/json",
@@ -100,7 +143,9 @@ export function MediaUploadForm({
         },
         body: JSON.stringify({
           mediaId: initiateResult.mediaId,
-          driveFileId: driveFile.id,
+          mode: initiateResult.mode,
+          etag,
+          parts,
         }),
       });
       const completeResult = (await complete.json()) as { ok?: boolean; error?: string };
@@ -110,7 +155,7 @@ export function MediaUploadForm({
       }
 
       setStep("done");
-      setMessage(`${driveFile.name || file.name} was uploaded and saved.`);
+      setMessage(`${file.name} was uploaded to R2 and saved.`);
       event.currentTarget.reset();
     } catch (error) {
       setStep("error");
@@ -128,10 +173,7 @@ export function MediaUploadForm({
           <select
             name="mediaType"
             value={mediaType}
-            onChange={(event) => {
-              setMediaType(event.target.value as "image" | "video");
-              setFolderId("");
-            }}
+            onChange={(event) => setMediaType(event.target.value as "image" | "video")}
             className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus"
           >
             <option value="video">Video</option>
@@ -139,20 +181,12 @@ export function MediaUploadForm({
           </select>
         </label>
         <label className="grid gap-2">
-          <span className="label">Drive folder</span>
-          <select
-            name="folderId"
-            value={folderId}
-            onChange={(event) => setFolderId(event.target.value)}
+          <span className="label">CDN prefix</span>
+          <input
+            value={mediaType === "image" ? "images/YYYY/MM" : "videos/YYYY/MM"}
+            readOnly
             className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus"
-          >
-            <option value="">Default folder</option>
-            {visibleFolders.map((folder) => (
-              <option key={`${folder.label}-${folder.value}`} value={folder.value}>
-                {folder.label}
-              </option>
-            ))}
-          </select>
+          />
         </label>
       </div>
       <label className="grid gap-2">
@@ -170,8 +204,16 @@ export function MediaUploadForm({
         className="inline-flex min-h-12 w-fit items-center gap-2 rounded-full bg-sahel px-5 font-label text-xs font-bold uppercase tracking-[0.18em] text-obsidian disabled:cursor-not-allowed disabled:opacity-55"
       >
         <UploadCloud aria-hidden size={17} />
-        {isBusy ? "Uploading" : "Upload to Drive"}
+        {isBusy ? "Uploading" : "Upload to R2"}
       </button>
+      {isBusy && progress > 0 ? (
+        <div className="h-2 overflow-hidden rounded-full bg-papyrus/10" aria-label="Upload progress">
+          <div
+            className="h-full bg-sahel transition-all"
+            style={{ width: `${progress}%` }}
+          />
+        </div>
+      ) : null}
       {message ? (
         <p
           className={`border p-4 text-sm ${

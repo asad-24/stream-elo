@@ -1,5 +1,24 @@
 import type { NextConfig } from "next";
 
+function r2ImageRemotePattern() {
+  const baseUrl = process.env.R2_PUBLIC_BASE_URL || "https://cdn.meroestream.com";
+
+  try {
+    const url = new URL(baseUrl);
+    return {
+      protocol: "https" as const,
+      hostname: url.hostname,
+      pathname: "/**",
+    };
+  } catch {
+    return {
+      protocol: "https" as const,
+      hostname: "cdn.meroestream.com",
+      pathname: "/**",
+    };
+  }
+}
+
 const nextConfig: NextConfig = {
   async redirects() {
     return [
@@ -56,6 +75,7 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "img.youtube.com",
       },
+      r2ImageRemotePattern(),
     ],
   },
 };

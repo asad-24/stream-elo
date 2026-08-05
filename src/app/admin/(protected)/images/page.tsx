@@ -18,11 +18,11 @@ export default async function AdminImagesPage() {
     <AdminPage
       eyebrow="Images"
       title="Image management"
-      intro="Manage image metadata, alt text, captions, visibility, and Drive-backed image records."
+      intro="Manage image metadata, alt text, captions, visibility, and R2-backed image records."
     >
       {!images.ok ? <AdminNotice tone="error">{images.error}</AdminNotice> : null}
       <AdminCard
-        title="Drive image records"
+        title="R2 image records"
         eyebrow={`${images.rows.length} images`}
         action={<AdminLinkButton href="/admin/media/upload">Upload image</AdminLinkButton>}
       >
@@ -33,8 +33,8 @@ export default async function AdminImagesPage() {
                 <div className="relative aspect-[4/3] bg-black/45">
                   <SafeMediaImage
                     source={
-                      image.driveFileId
-                        ? { type: "drive", mediaId: image.id }
+                      image.publicUrl
+                        ? { type: "url", src: image.publicUrl }
                         : { type: "local", src: "/media/fallback-image.svg" }
                     }
                     alt={image.title}
@@ -62,7 +62,7 @@ export default async function AdminImagesPage() {
         ) : (
           <EmptyState
             title="No images in MongoDB yet"
-            body="Image uploads or imports will appear here with preview, metadata, visibility, and Drive references."
+            body="Image uploads will appear here with preview, metadata, visibility, and R2 references."
             action={<AdminLinkButton href="/admin/media/upload">Upload image</AdminLinkButton>}
           />
         )}

@@ -1,6 +1,8 @@
 # Google Drive Media Limitations
 
-Google Drive is being used as file storage for Meroe Stream media. It is not a specialized video CDN.
+Google Drive was the original planned file storage for Meroe Stream media. The
+active upload and public delivery provider is now Cloudflare R2; see
+`docs/cloudflare-r2-media.md`.
 
 ## Practical Limitations
 
@@ -42,23 +44,19 @@ Downloads are allowed only when:
 
 ## Future CDN Migration
 
-The project includes a storage abstraction:
+The project includes storage helpers:
 
 ```text
 src/lib/media/storage-provider.ts
 src/lib/media/google-drive-storage-provider.ts
+src/lib/media/r2-storage-provider.ts
 ```
 
-Future providers can implement the same interface without rewriting the complete admin panel.
-
-Possible future providers:
-
-- Cloudflare R2 plus CDN
-- Vercel Blob
-- Bunny Stream
-- Mux
-- Cloudflare Stream
+Google Drive routes remain useful only as legacy compatibility code for existing
+Drive-backed records. New admin uploads should go to R2.
 
 ## Recommendation
 
-Use Google Drive for the current admin-managed media workflow, but keep high-traffic public streaming migration-ready.
+Use Cloudflare R2 for the current admin-managed public media workflow. Use a
+separate private bucket or signed-read design if protected media becomes a
+product requirement later.

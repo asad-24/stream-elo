@@ -1,6 +1,11 @@
 # Google Drive Setup
 
-This project uses Google Drive as the primary storage location for admin-managed images and videos. Google Drive credentials must stay server-side. Do not expose refresh tokens, client secrets, service-account keys, or resumable upload credentials in public code.
+This is legacy documentation for older Google Drive-backed media records. New
+admin uploads use Cloudflare R2; see `docs/cloudflare-r2-media.md`.
+
+Google Drive credentials must stay server-side. Do not expose refresh tokens,
+client secrets, service-account keys, or resumable upload credentials in public
+code.
 
 ## Recommended Account
 

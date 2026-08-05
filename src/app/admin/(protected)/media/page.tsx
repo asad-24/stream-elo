@@ -23,7 +23,7 @@ export default async function AdminMediaPage({
     <AdminPage
       eyebrow="Media"
       title="Media library"
-      intro="Browse, search, preview, rename, archive, delete, download, and copy media references. Full media CRUD will use MongoDB media records and Google Drive file IDs."
+      intro="Browse, search, preview, rename, archive, delete, download, and copy media references. Active uploads use MongoDB media records and Cloudflare R2 object keys."
     >
       {!media.ok ? <AdminNotice tone="error">{media.error}</AdminNotice> : null}
       <AdminCard
@@ -35,7 +35,7 @@ export default async function AdminMediaPage({
           <input
             name="q"
             defaultValue={query}
-            placeholder="Search title, filename, slug, or Drive ID"
+            placeholder="Search title, filename, slug, or R2 key"
             className="min-h-11 flex-1 border border-papyrus/15 bg-obsidian px-4 text-sm text-papyrus placeholder:text-papyrus/35"
           />
           <button className="min-h-11 rounded-full bg-sahel px-5 font-label text-xs font-bold uppercase tracking-[0.16em] text-obsidian">
@@ -43,7 +43,7 @@ export default async function AdminMediaPage({
           </button>
         </form>
         <AdminTable
-          columns={["Title", "Type", "Status", "Visibility", "Size", "Drive ID", "Updated"]}
+          columns={["Title", "Type", "Status", "Visibility", "Size", "R2 key", "Updated"]}
           rows={media.rows.map((item) => [
             <div key={`${item.id}-title`}>
               <p className="text-papyrus">{item.title}</p>
@@ -53,15 +53,15 @@ export default async function AdminMediaPage({
             <StatusPill key={`${item.id}-status`} value={item.status} />,
             item.visibility,
             item.sizeLabel,
-            <span key={`${item.id}-drive`} className="break-all font-mono text-xs">
-              {item.driveFileId || "Not linked"}
+            <span key={`${item.id}-r2`} className="break-all font-mono text-xs">
+              {item.r2Key || "Not linked"}
             </span>,
             item.updatedAt,
           ])}
           empty={
             <EmptyState
               title="No media records yet"
-              body="Use the upload screen or import script to create Google Drive-backed media records in MongoDB."
+              body="Use the upload screen to create R2-backed media records in MongoDB."
               action={<AdminLinkButton href="/admin/media/upload">Upload media</AdminLinkButton>}
             />
           }

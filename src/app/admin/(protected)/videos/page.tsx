@@ -18,11 +18,11 @@ export default async function AdminVideosPage() {
     <AdminPage
       eyebrow="Videos"
       title="Video management"
-      intro="Import, preview, stream, download, archive, and assign Drive-backed video records."
+      intro="Import, preview, download, archive, and assign R2-backed video records."
     >
       {!videos.ok ? <AdminNotice tone="error">{videos.error}</AdminNotice> : null}
       <AdminCard
-        title="Drive video records"
+        title="R2 video records"
         eyebrow={`${videos.rows.length} videos`}
         action={<AdminLinkButton href="/admin/videos/upload">Upload video</AdminLinkButton>}
       >
@@ -36,24 +36,24 @@ export default async function AdminVideosPage() {
             <StatusPill key={`${video.id}-status`} value={video.status} />,
             video.visibility,
             video.sizeLabel,
-            video.driveFileId ? (
+            video.publicUrl ? (
               <a
                 key={`${video.id}-stream`}
-                href={`/api/media/stream/${video.id}`}
+                href={video.publicUrl}
                 className="text-sahel underline-offset-4 hover:underline"
               >
-                Open stream
+                Open CDN
               </a>
             ) : (
               "Not linked"
             ),
-            video.driveFileId ? (
+            video.publicUrl ? (
               <a
                 key={`${video.id}-download`}
-                href={`/api/media/download/${video.id}`}
+                href={video.publicUrl}
                 className="text-sahel underline-offset-4 hover:underline"
               >
-                Download
+                Open file
               </a>
             ) : (
               "Not linked"

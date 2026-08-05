@@ -7,9 +7,17 @@ import { SectionHeading } from "@/components/section-heading";
 import { PartnershipBenefits } from "@/components/sections/partnership-benefits";
 import { StatsBand } from "@/components/sections/stats-band";
 import { TheatreCard } from "@/components/theatre-card";
-import { asset, featuredFilms, projects, theatreProductions } from "@/lib/content";
+import { asset, featuredFilms, theatreProductions } from "@/lib/content";
+import { getProjectsContent } from "@/lib/content-service";
 
-export default function Home() {
+export const dynamic = "force-dynamic";
+
+export default async function Home() {
+  const publicProjects = await getProjectsContent();
+  const publicFeaturedFilms = publicProjects.filter(
+    (project) => project.category === "Film" || project.category === "Documentaries",
+  );
+
   return (
     <>
       <section className="relative min-h-[92svh] overflow-hidden pt-20">
@@ -105,7 +113,7 @@ export default function Home() {
             intro="A focused selection from the growing Meroestream slate."
           />
           <div className="mt-12 grid gap-5 lg:grid-cols-3">
-            {projects.slice(0, 3).map((film) => (
+            {publicProjects.slice(0, 3).map((film) => (
               <FilmCard key={film.slug} film={film} />
             ))}
           </div>
@@ -148,9 +156,11 @@ export default function Home() {
             intro="Features, documentaries, and short films curated by the Meroestream editorial team."
           />
           <div className="mt-12 grid gap-5 lg:grid-cols-3">
-            {featuredFilms.map((film) => (
-              <FilmCard key={film.slug} film={film} />
-            ))}
+            {(publicFeaturedFilms.length ? publicFeaturedFilms : featuredFilms)
+              .slice(0, 3)
+              .map((film) => (
+                <FilmCard key={film.slug} film={film} />
+              ))}
           </div>
         </div>
       </section>

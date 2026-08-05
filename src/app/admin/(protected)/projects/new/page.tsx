@@ -1,7 +1,9 @@
+import { ObjectId } from "mongodb";
 import { redirect } from "next/navigation";
 import { AdminPage } from "@/components/admin/admin-page";
 import { AdminCard, AdminNotice } from "@/components/admin/admin-widgets";
 import { getCurrentAdminUser } from "@/lib/server/admin-auth";
+import { getAdminMediaOptions } from "@/lib/server/admin-data";
 import { slugify } from "@/lib/server/media-validation";
 import { collections, getDb } from "@/lib/server/mongodb";
 
@@ -19,6 +21,14 @@ async function createProject(formData: FormData) {
   const status = String(formData.get("status") ?? "draft").trim();
   const shortDescription = String(formData.get("shortDescription") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
+  const posterMediaId = String(formData.get("posterMediaId") ?? "");
+  const coverMediaId = String(formData.get("coverMediaId") ?? "");
+  const videoMediaId = String(formData.get("videoMediaId") ?? "");
+  const galleryMediaIds = formData
+    .getAll("galleryMediaIds")
+    .map(String)
+    .filter((value) => ObjectId.isValid(value))
+    .map((value) => new ObjectId(value));
 
   if (!title) redirect("/admin/projects/new?error=missing-title");
 
@@ -30,10 +40,19 @@ async function createProject(formData: FormData) {
     shortDescription,
     description,
     category,
+    ...(ObjectId.isValid(posterMediaId)
+      ? { posterMediaId: new ObjectId(posterMediaId) }
+      : undefined),
+    ...(ObjectId.isValid(coverMediaId)
+      ? { coverMediaId: new ObjectId(coverMediaId) }
+      : undefined),
+    ...(ObjectId.isValid(videoMediaId)
+      ? { videoMediaId: new ObjectId(videoMediaId) }
+      : undefined),
     featured: false,
     status,
     sortOrder: 0,
-    galleryMediaIds: [],
+    galleryMediaIds,
     createdAt: now,
     updatedAt: now,
   });
@@ -47,12 +66,16 @@ export default async function AdminNewProjectPage({
   searchParams: Promise<{ error?: string }>;
 }) {
   const error = (await searchParams).error;
+  const [imageOptions, videoOptions] = await Promise.all([
+    getAdminMediaOptions("image"),
+    getAdminMediaOptions("video"),
+  ]);
 
   return (
     <AdminPage
       eyebrow="Projects"
       title="Create project"
-      intro="Create a MongoDB-backed project record. Media assignment can be added after Drive image and video records exist."
+      intro="Create a MongoDB-backed project record and assign ready R2 image and video media."
     >
       {error ? <AdminNotice tone="error">Project title is required.</AdminNotice> : null}
       <div className="mt-6">
@@ -118,6 +141,65 @@ export default async function AdminNewProjectPage({
                 rows={6}
                 className="border border-papyrus/15 bg-obsidian px-4 py-3 text-papyrus"
               />
+            </label>
+            <div className="grid gap-4 md:grid-cols-3">
+              <label className="grid gap-2">
+                <span className="label">Poster image</span>
+                <select
+                  name="posterMediaId"
+                  className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus"
+                >
+                  <option value="">Fallback artwork</option>
+                  {imageOptions.map((image) => (
+                    <option key={image.id} value={image.id}>
+                      {image.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="grid gap-2">
+                <span className="label">Cover image</span>
+                <select
+                  name="coverMediaId"
+                  className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus"
+                >
+                  <option value="">Fallback artwork</option>
+                  {imageOptions.map((image) => (
+                    <option key={image.id} value={image.id}>
+                      {image.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
+              <label className="grid gap-2">
+                <span className="label">Video</span>
+                <select
+                  name="videoMediaId"
+                  className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus"
+                >
+                  <option value="">No video</option>
+                  {videoOptions.map((video) => (
+                    <option key={video.id} value={video.id}>
+                      {video.title}
+                    </option>
+                  ))}
+                </select>
+              </label>
+            </div>
+            <label className="grid gap-2">
+              <span className="label">Gallery images</span>
+              <select
+                name="galleryMediaIds"
+                multiple
+                size={Math.min(Math.max(imageOptions.length, 3), 8)}
+                className="border border-papyrus/15 bg-obsidian px-4 py-3 text-papyrus"
+              >
+                {imageOptions.map((image) => (
+                  <option key={image.id} value={image.id}>
+                    {image.title}
+                  </option>
+                ))}
+              </select>
             </label>
             <button className="min-h-12 w-fit rounded-full bg-sahel px-5 font-label text-xs font-bold uppercase tracking-[0.18em] text-obsidian">
               Save project

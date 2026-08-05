@@ -1,7 +1,7 @@
 import "server-only";
 
 import { ObjectId, type Document, type Filter } from "mongodb";
-import { getGoogleDriveConfig } from "@/lib/google-drive/config";
+import { getR2Config } from "@/lib/media/r2-storage-provider";
 import { fallbackContent } from "@/lib/content-service";
 import { collections, getDb } from "@/lib/server/mongodb";
 
@@ -17,6 +17,9 @@ export type AdminMediaRow = {
   sizeLabel: string;
   driveFileId: string;
   driveFolderId: string;
+  r2Key: string;
+  r2Bucket: string;
+  publicUrl: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -67,6 +70,13 @@ export type AdminSettingRow = {
   value: string;
   source: "Environment" | "MongoDB";
   status: "ready" | "missing" | "optional";
+};
+
+export type AdminMediaOption = {
+  id: string;
+  title: string;
+  mediaType: "image" | "video";
+  publicUrl: string;
 };
 
 function asId(value: unknown) {
@@ -132,6 +142,9 @@ function serializeMedia(doc: Document): AdminMediaRow {
     sizeLabel: formatBytes(doc.size),
     driveFileId: asText(doc.driveFileId, ""),
     driveFolderId: asText(doc.driveFolderId, ""),
+    r2Key: asText(doc.r2Key, ""),
+    r2Bucket: asText(doc.r2Bucket, ""),
+    publicUrl: asText(doc.publicUrl, ""),
     createdAt: asDate(doc.createdAt),
     updatedAt: asDate(doc.updatedAt),
   };
@@ -213,6 +226,7 @@ export async function getAdminMediaRows(input?: {
         { originalName: pattern },
         { slug: pattern },
         { driveFileId: pattern },
+        { r2Key: pattern },
       ];
     }
 
@@ -231,6 +245,33 @@ export async function getAdminMediaRows(input?: {
       error: error instanceof Error ? error.message : "Unable to load media.",
       rows: [],
     };
+  }
+}
+
+export async function getAdminMediaOptions(mediaType: "image" | "video") {
+  try {
+    const db = await getDb();
+    const rows = await db
+      .collection(collections.mediaAssets)
+      .find({
+        mediaType,
+        source: "r2",
+        visibility: "public",
+        status: { $in: ["ready", "published"] },
+        publicUrl: { $type: "string", $ne: "" },
+      })
+      .sort({ title: 1, createdAt: -1 })
+      .limit(200)
+      .toArray();
+
+    return rows.map((item): AdminMediaOption => ({
+      id: asId(item._id),
+      title: asText(item.title, "Untitled media"),
+      mediaType,
+      publicUrl: asText(item.publicUrl, ""),
+    }));
+  } catch {
+    return [];
   }
 }
 
@@ -434,7 +475,7 @@ export async function getAdminUserRows() {
 }
 
 export async function getAdminSettingRows() {
-  const drive = getGoogleDriveConfig();
+  const r2 = getR2Config();
   const rows: AdminSettingRow[] = [
     {
       key: "MongoDB",
@@ -449,39 +490,40 @@ export async function getAdminSettingRows() {
       status: process.env.SESSION_SECRET || process.env.AUTH_SECRET ? "ready" : "missing",
     },
     {
-      key: "Google auth",
-      value:
-        drive.authMode === "oauth"
-          ? "OAuth refresh token"
-          : drive.authMode === "service-account"
-            ? "Service account"
-            : "Missing client secret and refresh token",
+      key: "Media provider",
+      value: process.env.MEDIA_PROVIDER ?? "r2",
       source: "Environment",
-      status: drive.authMode === "missing" ? "missing" : "ready",
+      status: (process.env.MEDIA_PROVIDER ?? "r2") === "r2" ? "ready" : "optional",
     },
     {
-      key: "Drive images folder",
-      value: drive.imagesFolderId ?? "Missing",
+      key: "R2 account",
+      value: r2.accountId ? "Configured" : "Missing R2_ACCOUNT_ID",
       source: "Environment",
-      status: drive.imagesFolderId ? "ready" : "missing",
+      status: r2.accountId ? "ready" : "missing",
     },
     {
-      key: "Drive videos folder",
-      value: drive.videosFolderId ?? "Missing",
+      key: "R2 bucket",
+      value: r2.bucketName ?? "Missing R2_BUCKET_NAME",
       source: "Environment",
-      status: drive.videosFolderId ? "ready" : "missing",
+      status: r2.bucketName ? "ready" : "missing",
     },
     {
-      key: "Drive downloads folder",
-      value: drive.downloadsFolderId ?? "Missing",
+      key: "R2 credentials",
+      value: r2.accessKeyId && r2.secretAccessKey ? "Configured" : "Missing access key or secret",
       source: "Environment",
-      status: drive.downloadsFolderId ? "ready" : "missing",
+      status: r2.accessKeyId && r2.secretAccessKey ? "ready" : "missing",
     },
     {
-      key: "Drive originals folder",
-      value: drive.originalsFolderId ?? "Missing",
+      key: "R2 public base URL",
+      value: r2.publicBaseUrl ?? "Missing R2_PUBLIC_BASE_URL",
       source: "Environment",
-      status: drive.originalsFolderId ? "ready" : "missing",
+      status: r2.publicBaseUrl ? "ready" : "missing",
+    },
+    {
+      key: "R2 multipart part size",
+      value: `${Math.round(r2.uploadPartSize / 1024 / 1024)} MB`,
+      source: "Environment",
+      status: "ready",
     },
     {
       key: "Image upload limit",
@@ -539,11 +581,8 @@ export async function getAdminSettingRows() {
 }
 
 export function getDriveFolderOptions() {
-  const drive = getGoogleDriveConfig();
   return [
-    { label: "Images", value: drive.imagesFolderId ?? "", mediaType: "image" as const },
-    { label: "Videos", value: drive.videosFolderId ?? "", mediaType: "video" as const },
-    { label: "Downloads", value: drive.downloadsFolderId ?? "", mediaType: "video" as const },
-    { label: "Originals", value: drive.originalsFolderId ?? "", mediaType: "video" as const },
-  ].filter((item) => item.value);
+    { label: "Images", value: "images", mediaType: "image" as const },
+    { label: "Videos", value: "videos", mediaType: "video" as const },
+  ];
 }
