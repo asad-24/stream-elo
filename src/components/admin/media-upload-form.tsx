@@ -154,6 +154,19 @@ export function MediaUploadForm({
         throw new Error(completeResult.error || "Upload finished, but metadata was not saved.");
       }
 
+      const metadata = await fetch(`/api/admin/media/${initiateResult.mediaId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: String(data.get("title") || file.name.replace(/\.[^.]+$/, "")),
+          altText: String(data.get("altText") || ""),
+          caption: String(data.get("caption") || ""),
+          visibility: "public",
+          allowDownload: data.get("allowDownload") === "on",
+        }),
+      });
+      if (!metadata.ok) throw new Error("Upload finished, but display details could not be saved.");
+
       setStep("done");
       setMessage(`${file.name} was uploaded to R2 and saved.`);
       event.currentTarget.reset();
@@ -198,6 +211,12 @@ export function MediaUploadForm({
           className="min-h-12 border border-papyrus/15 bg-obsidian px-4 py-3 text-papyrus file:mr-4 file:rounded-full file:border-0 file:bg-sahel file:px-4 file:py-2 file:font-label file:text-xs file:font-bold file:uppercase file:tracking-[0.14em] file:text-obsidian"
         />
       </label>
+      <div className="grid gap-4 md:grid-cols-2">
+        <label className="grid gap-2"><span className="label">Display title</span><input name="title" placeholder="Defaults to the filename" className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus" /></label>
+        <label className="grid gap-2"><span className="label">Alt text</span><input name="altText" placeholder="Describe the image or video poster" className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus" /></label>
+      </div>
+      <label className="grid gap-2"><span className="label">Caption / display details</span><textarea name="caption" rows={3} placeholder="Text shown with this media when a component supports captions" className="border border-papyrus/15 bg-obsidian p-4 text-papyrus" /></label>
+      <label className="flex items-center gap-2 text-sm text-papyrus/70"><input type="checkbox" name="allowDownload" /> Allow public download</label>
       <button
         type="submit"
         disabled={isBusy}

@@ -38,6 +38,7 @@ export async function getDb(): Promise<Db> {
 }
 
 export const collections = {
+  schemaMigrations: "schema_migrations",
   contactInquiries: "contact_inquiries",
   users: "users",
   siteSettings: "site_settings",

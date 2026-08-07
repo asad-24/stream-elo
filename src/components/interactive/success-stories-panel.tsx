@@ -5,9 +5,10 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { successStories } from "@/lib/content";
 
-export function SuccessStoriesPanel() {
+type SuccessStory = (typeof successStories)[number];
+export function SuccessStoriesPanel({ items = successStories }: { items?: SuccessStory[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const active = successStories[activeIndex];
+  const active = items[activeIndex] ?? items[0] ?? successStories[0];
 
   return (
     <div className="grid gap-8 lg:grid-cols-[0.45fr_1fr]">
@@ -16,7 +17,7 @@ export function SuccessStoriesPanel() {
         role="tablist"
         aria-label="Success stories"
       >
-        {successStories.map((story, index) => (
+        {items.map((story, index) => (
           <button
             key={story.name}
             type="button"
@@ -27,11 +28,11 @@ export function SuccessStoriesPanel() {
             onKeyDown={(event) => {
               if (event.key === "ArrowDown" || event.key === "ArrowRight") {
                 event.preventDefault();
-                setActiveIndex((index + 1) % successStories.length);
+                setActiveIndex((index + 1) % items.length);
               }
               if (event.key === "ArrowUp" || event.key === "ArrowLeft") {
                 event.preventDefault();
-                setActiveIndex((index - 1 + successStories.length) % successStories.length);
+                setActiveIndex((index - 1 + items.length) % items.length);
               }
             }}
             className={`min-h-14 shrink-0 border px-5 text-left font-serif text-2xl transition lg:w-full ${

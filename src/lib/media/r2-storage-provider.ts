@@ -56,6 +56,9 @@ export function getR2Config() {
   const secretAccessKey = process.env.R2_SECRET_ACCESS_KEY?.trim();
   const bucketName = process.env.R2_BUCKET_NAME?.trim();
   const publicBaseUrl = process.env.R2_PUBLIC_BASE_URL?.trim().replace(/\/$/, "");
+  const objectPrefix = (process.env.R2_OBJECT_PREFIX ?? (process.env.NODE_ENV === "production" ? "production" : "dev"))
+    .trim()
+    .replace(/^\/+|\/+$/g, "");
   const rawPartSizeMb = Number(process.env.R2_UPLOAD_PART_SIZE_MB ?? 64);
   const uploadPartSize = Math.max(
     minimumPartSize,
@@ -68,6 +71,7 @@ export function getR2Config() {
     secretAccessKey,
     bucketName,
     publicBaseUrl,
+    objectPrefix,
     uploadPartSize,
     endpoint: accountId
       ? `https://${accountId}.r2.cloudflarestorage.com`
@@ -126,7 +130,8 @@ export function createR2ObjectKey(input: {
       ? crypto.randomUUID()
       : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
-  return `${input.mediaType}s/${yyyy}/${mm}/${safeBase}-${token}${ext}`;
+  const prefix = getR2Config().objectPrefix;
+  return `${prefix ? `${prefix}/` : ""}${input.mediaType}s/${yyyy}/${mm}/${safeBase}-${token}${ext}`;
 }
 
 export function getR2PublicUrl(key: string) {

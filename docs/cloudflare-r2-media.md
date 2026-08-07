@@ -12,7 +12,8 @@ R2_ACCOUNT_ID=""
 R2_ACCESS_KEY_ID=""
 R2_SECRET_ACCESS_KEY=""
 R2_BUCKET_NAME="meroestream-media"
-R2_PUBLIC_BASE_URL="https://cdn.meroestream.com"
+R2_PUBLIC_BASE_URL="https://your-r2-custom-domain.example"
+R2_OBJECT_PREFIX="dev"
 R2_UPLOAD_PART_SIZE_MB=64
 MAX_IMAGE_UPLOAD_MB=20
 MAX_VIDEO_UPLOAD_MB=5000
@@ -66,8 +67,8 @@ back to the app for completion.
 - Images use a single presigned `PUT`.
 - Small videos under about 100 MB may use a single presigned `PUT`.
 - Large videos use multipart upload with `R2_UPLOAD_PART_SIZE_MB` chunks.
-- New objects use date-based prefixes such as `images/2026/08/...` and
-  `videos/2026/08/...`.
+- New objects use environment and date prefixes such as `dev/images/2026/08/...`
+  and `production/videos/2026/08/...`.
 - Completed uploads are stored in MongoDB with `source: "r2"`, `r2Key`,
   `r2Bucket`, `publicUrl`, and `etag`.
 

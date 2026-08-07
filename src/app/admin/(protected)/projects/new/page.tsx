@@ -21,6 +21,14 @@ async function createProject(formData: FormData) {
   const status = String(formData.get("status") ?? "draft").trim();
   const shortDescription = String(formData.get("shortDescription") ?? "").trim();
   const description = String(formData.get("description") ?? "").trim();
+  const director = String(formData.get("director") ?? "").trim();
+  const cast = String(formData.get("cast") ?? "").split("\n").map((value) => value.trim()).filter(Boolean);
+  const year = String(formData.get("year") ?? "").trim();
+  const duration = String(formData.get("duration") ?? "").trim();
+  const location = String(formData.get("location") ?? "").trim();
+  const productionDate = String(formData.get("productionDate") ?? "").trim();
+  const publicStatus = String(formData.get("publicStatus") ?? "Upcoming").trim();
+  const credits = String(formData.get("credits") ?? "").split("\n").map((value) => value.trim()).filter(Boolean);
   const posterMediaId = String(formData.get("posterMediaId") ?? "");
   const coverMediaId = String(formData.get("coverMediaId") ?? "");
   const videoMediaId = String(formData.get("videoMediaId") ?? "");
@@ -39,6 +47,7 @@ async function createProject(formData: FormData) {
     slug: slugify(rawSlug || title),
     shortDescription,
     description,
+    director, cast, year, duration, location, productionDate, publicStatus, credits,
     category,
     ...(ObjectId.isValid(posterMediaId)
       ? { posterMediaId: new ObjectId(posterMediaId) }
@@ -134,8 +143,8 @@ export default async function AdminNewProjectPage({
                 className="border border-papyrus/15 bg-obsidian px-4 py-3 text-papyrus"
               />
             </label>
-            <label className="grid gap-2">
-              <span className="label">Full description</span>
+              <label className="grid gap-2">
+                <span className="label">Full description</span>
               <textarea
                 name="description"
                 rows={6}
@@ -157,6 +166,15 @@ export default async function AdminNewProjectPage({
                   ))}
                 </select>
               </label>
+              <div className="grid gap-4 md:grid-cols-2">
+                <label className="grid gap-2"><span className="label">Director</span><input name="director" className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus" /></label>
+                <label className="grid gap-2"><span className="label">Public status</span><input name="publicStatus" defaultValue="Upcoming" placeholder="Live, Streaming, Completed..." className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus" /></label>
+                <label className="grid gap-2"><span className="label">Year</span><input name="year" className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus" /></label>
+                <label className="grid gap-2"><span className="label">Duration</span><input name="duration" placeholder="98 min" className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus" /></label>
+                <label className="grid gap-2"><span className="label">Location</span><input name="location" className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus" /></label>
+                <label className="grid gap-2"><span className="label">Production date</span><input name="productionDate" className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus" /></label>
+              </div>
+              <div className="grid gap-4 md:grid-cols-2"><label className="grid gap-2"><span className="label">Cast — one per line</span><textarea name="cast" rows={5} className="border border-papyrus/15 bg-obsidian p-4 text-papyrus" /></label><label className="grid gap-2"><span className="label">Credits — one per line</span><textarea name="credits" rows={5} className="border border-papyrus/15 bg-obsidian p-4 text-papyrus" /></label></div>
               <label className="grid gap-2">
                 <span className="label">Cover image</span>
                 <select
