@@ -75,7 +75,7 @@ export function VideoModal({
               className="w-full max-w-5xl"
             >
               <div className="mb-4 flex items-center justify-between gap-4">
-                <h2 id={titleId} className="font-serif text-3xl text-papyrus">
+                <h2 id={titleId} className="font-serif text-2xl text-papyrus">
                   {title}
                 </h2>
                 <button

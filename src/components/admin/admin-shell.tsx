@@ -11,15 +11,12 @@ const links: Array<{
   { href: "/admin/media", label: "Media" },
   { href: "/admin/images", label: "Images" },
   { href: "/admin/videos", label: "Videos" },
-  { href: "/admin/videos/upload", label: "Upload Video" },
-  { href: "/admin/projects", label: "Projects" },
-  { href: "/admin/content/categories", label: "Categories" },
-  { href: "/admin/pages", label: "Pages" },
+  { href: "/admin/pages?tab=home", label: "Home Page" },
+  { href: "/admin/pages?tab=portfolio", label: "Portfolio Page" },
+  { href: "/admin/pages?tab=music", label: "Music Page" },
   { href: "/admin/content/success-stories", label: "Success Stories" },
   { href: "/admin/content/bts-projects", label: "BTS Content" },
-  { href: "/admin/content/galleries", label: "Galleries" },
   { href: "/admin/content/statistics", label: "Statistics" },
-  { href: "/admin/content/benefits", label: "Benefits" },
   { href: "/admin/settings", label: "Settings", role: "admin" },
   { href: "/admin/users", label: "Users", role: "super-admin" },
   { href: "/admin/profile", label: "Profile" },
@@ -36,7 +33,7 @@ export function AdminShell({
     <div className="min-h-screen bg-[#080705] text-papyrus">
       <aside className="fixed inset-y-0 left-0 hidden w-64 border-r border-papyrus/10 bg-obsidian/95 p-5 lg:block">
         <Link href="/admin/dashboard" className="font-serif text-3xl text-sahel">
-          meroeStream
+          MeroStream
         </Link>
         <p className="mt-2 text-xs text-papyrus/50">{user.email}</p>
         <nav className="mt-8 space-y-1">

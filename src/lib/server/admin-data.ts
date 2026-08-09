@@ -77,6 +77,7 @@ export type AdminMediaOption = {
   title: string;
   mediaType: "image" | "video";
   publicUrl: string;
+  source: string;
 };
 
 function asId(value: unknown) {
@@ -255,7 +256,7 @@ export async function getAdminMediaOptions(mediaType: "image" | "video") {
       .collection(collections.mediaAssets)
       .find({
         mediaType,
-        source: "r2",
+        source: { $in: ["r2", "youtube"] },
         visibility: "public",
         status: { $in: ["ready", "published"] },
         publicUrl: { $type: "string", $ne: "" },
@@ -269,6 +270,7 @@ export async function getAdminMediaOptions(mediaType: "image" | "video") {
       title: asText(item.title, "Untitled media"),
       mediaType,
       publicUrl: asText(item.publicUrl, ""),
+      source: asText(item.source, ""),
     }));
   } catch {
     return [];

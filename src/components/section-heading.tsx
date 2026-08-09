@@ -24,7 +24,7 @@ export function SectionHeading({
       )}
     >
       <p className="label">{eyebrow}</p>
-      <h2 className="mt-5 font-serif text-4xl leading-[0.98] text-papyrus sm:text-5xl md:text-6xl lg:text-7xl">
+      <h2 className="mt-5 font-serif text-3xl leading-[0.98] text-papyrus sm:text-4xl md:text-5xl lg:text-6xl">
         {title}
       </h2>
       {intro ? (

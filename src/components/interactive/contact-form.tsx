@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useState } from "react";
+import Link from "next/link";
 import { contact } from "@/lib/content";
 import { mailtoUrl } from "@/lib/utils";
 
@@ -149,8 +150,7 @@ export function ContactForm() {
           className="mt-1 h-4 w-4 accent-sahel"
         />
         <span>
-          I agree that Meroestream may use this information to respond to my
-          enquiry.
+          I agree that MeroStream may use this information to respond to my enquiry as described in the <Link href="/privacy-cookies-policy" className="text-sahel underline underline-offset-4">Privacy &amp; Cookies Policy</Link>.
         </span>
       </label>
       <label className="hidden">

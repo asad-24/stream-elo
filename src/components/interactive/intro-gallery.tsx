@@ -1,30 +1,41 @@
 "use client";
 
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { Images, X } from "lucide-react";
 import { useEffect, useId, useState } from "react";
+import { VideoModal } from "@/components/interactive/video-modal";
+import { type VideoSource } from "@/lib/content";
+import { youtubeVideoId } from "@/lib/utils";
+import { FittedCoverImage } from "@/components/ui/fitted-cover-image";
 
 type IntroGalleryItem = {
   src: string;
   alt: string;
+  video?: VideoSource;
 };
 
 function GalleryImage({ image, priority }: { image: IntroGalleryItem; priority?: boolean }) {
+  if (image.video) {
+    const youtubeId = image.video.type === "youtube" ? youtubeVideoId(image.video.url) : null;
+    const previewUrl = image.video.type === "drive" ? `/api/media/stream/${image.video.mediaId}` : image.video.url;
+    return <div className="absolute inset-0 bg-black">
+      {/* eslint-disable-next-line @next/next/no-img-element -- YouTube thumbnails are external preview images. */}
+      {youtubeId ? <img src={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`} alt={image.alt} className="h-full w-full object-cover opacity-75" /> : <video src={previewUrl} muted playsInline preload="metadata" className="h-full w-full object-cover opacity-70" />}
+      <div className="absolute inset-0 grid place-items-center"><VideoModal video={image.video} title={image.alt} compact /></div>
+    </div>;
+  }
   return (
-    <Image
+    <FittedCoverImage
       src={image.src}
       alt={image.alt}
-      fill
       unoptimized
       priority={priority}
       sizes="(min-width: 1024px) 24vw, (min-width: 640px) 45vw, 50vw"
-      className="object-cover"
     />
   );
 }
 
-export function IntroGallery({ images }: { images: IntroGalleryItem[] }) {
+export function IntroGallery({ images, label = "New release", title = "The Iron River - Now streaming" }: { images: IntroGalleryItem[]; label?: string; title?: string }) {
   const [open, setOpen] = useState(false);
   const titleId = useId();
   const previewImages = images.slice(0, 2);
@@ -57,9 +68,9 @@ export function IntroGallery({ images }: { images: IntroGalleryItem[] }) {
         </div>
         <div className="flex flex-col gap-4 border-t border-papyrus/10 px-5 py-5 sm:flex-row sm:items-center sm:justify-between md:px-6">
           <div>
-            <p className="label">New release</p>
-            <p className="mt-2 font-serif text-3xl leading-tight text-papyrus md:text-4xl">
-              The Iron River - Now streaming
+            <p className="label">{label}</p>
+            <p className="mt-2 font-serif text-2xl leading-tight text-papyrus md:text-3xl">
+              {title}
             </p>
           </div>
           <button
@@ -94,7 +105,7 @@ export function IntroGallery({ images }: { images: IntroGalleryItem[] }) {
               className="max-h-[92svh] w-full max-w-6xl overflow-y-auto"
             >
               <div className="mb-4 flex items-center justify-between gap-4">
-                <h2 id={titleId} className="font-serif text-3xl text-papyrus">
+                <h2 id={titleId} className="font-serif text-2xl text-papyrus">
                   New release gallery
                 </h2>
                 <button

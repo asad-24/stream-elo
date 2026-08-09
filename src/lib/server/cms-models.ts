@@ -27,7 +27,7 @@ export const mediaSchema = z.object({
   title: z.string().trim().min(1).max(180),
   slug: z.string().trim().min(1).max(220),
   mediaType: z.enum(["image", "video"]),
-  source: z.enum(["r2", "google-drive", "local", "legacy-remote"]),
+  source: z.enum(["r2", "google-drive", "youtube", "local", "legacy-remote"]),
   driveFileId: z.string().trim().min(10).optional(),
   driveFolderId: z.string().trim().min(10).optional(),
   r2Key: z.string().trim().min(1).max(1024).optional(),

@@ -21,13 +21,8 @@ export function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-40 border-b border-papyrus/10 bg-obsidian/74 backdrop-blur-xl">
       <div className="container-shell flex h-20 items-center justify-between gap-6">
-        <Link href="/" className="group flex items-baseline gap-1">
-          <span className="font-serif text-2xl text-sahel transition group-hover:text-papyrus">
-            meroe
-          </span>
-          <span className="font-serif text-2xl italic text-papyrus/70">
-            Stream
-          </span>
+        <Link href="/" className="group font-serif text-2xl text-sahel">
+          Mero<span className="italic text-papyrus/70 transition group-hover:text-papyrus">Stream</span>
         </Link>
         <nav aria-label="Main navigation" className="hidden items-center gap-1 lg:flex">
           {navigation.map((item) => (
@@ -45,7 +40,7 @@ export function Header() {
         </nav>
         <Link
           href="/contact"
-          aria-label="Partner with Meroestream"
+          aria-label="Partner with MeroStream"
           className="hidden min-h-11 items-center rounded-full border border-sahel/70 bg-sahel px-5 font-label text-[0.68rem] font-bold uppercase tracking-[0.2em] text-obsidian shadow-[0_0_24px_rgba(232,180,74,0.18)] transition hover:bg-papyrus hover:text-obsidian lg:inline-flex"
         >
           Partner

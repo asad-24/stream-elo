@@ -1,0 +1,15 @@
+import type { Metadata } from "next";
+import { SectionHeading } from "@/components/section-heading";
+export const metadata: Metadata = { title: "Sustainability & Environmental Policy", description: "MeroStream's environmental commitments for film, digital, and media production." };
+const sections = [
+  ["1. Vision and Commitment", "MeroStream recognizes that film and digital media production carry an environmental footprint through energy consumption, travel, resource use, and waste. We are committed to integrating environmental responsibility from script to screen so telling our stories does not come at the expense of our planet."],
+  ["2. Core Objectives", "We comply with relevant environmental regulations; pursue energy efficiency, digital-first workflows, and low-carbon transport; reduce, reuse, and recycle; and promote sustainable production practices among our teams and partners."],
+  ["3A. Energy & Lighting", "We prioritize LED lighting, mains grid power where available, hybrid or battery systems and cleaner fuels where generators are required, and powering down equipment during breaks and inactive hours."],
+  ["3B. Travel & Transport", "We prioritize low-emission vehicles, shared transport, public transit, essential flights only, direct routes, and evaluation of carbon-offsetting options."],
+  ["3C. Catering & Craft Service", "Our goal is single-use-plastic-free sets with refill stations and reusable drinkware, clearly labeled waste stations, local and seasonal sourcing, and more plant-based choices."],
+  ["3D. Art Department & Set Operations", "We favor sustainable local materials, FSC-certified timber, and non-toxic paints. Strike plans should ensure materials are reused, donated, or recycled instead of sent to landfill."],
+  ["4. Digital & Office Operations", "Scripts, call sheets, schedules, contracts, and press kits are handled digitally. Meetings are remote where practical, while office and post-production systems favor energy-saving hardware and renewable power."],
+  ["5. Procurement and Strategic Partners", "We favor environmentally responsible vendors and share sustainability guidance with suppliers, production partners, and heads of department during pre-production."],
+  ["6. Accountability & Ongoing Improvement", "For major productions, we aim to appoint a sustainability lead, measure carbon footprints using recognized media-industry tools, and review this policy annually as technology and best practices evolve."],
+] as const;
+export default function SustainabilityPolicyPage() { return <section className="bg-obsidian pt-36 md:pt-44"><article className="container-shell max-w-4xl pb-20 md:pb-28"><SectionHeading eyebrow="Our commitment" title="Sustainability & Environmental Policy" intro="Responsible production for independent African storytelling." /><div className="mt-12 grid gap-10">{sections.map(([heading, body]) => <section key={heading}><h2 className="font-serif text-3xl text-papyrus">{heading}</h2><p className="mt-4 leading-8 text-papyrus/68">{body}</p></section>)}</div></article></section>; }

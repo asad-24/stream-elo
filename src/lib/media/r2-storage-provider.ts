@@ -98,11 +98,29 @@ export function requireR2Config() {
   };
 }
 
-function createR2Client() {
+let r2ClockOffsetPromise: Promise<number> | undefined;
+
+async function getR2ClockOffset(endpoint: string) {
+  if (!r2ClockOffsetPromise) {
+    r2ClockOffsetPromise = fetch(endpoint, { method: "HEAD", cache: "no-store" })
+      .then((response) => {
+        const serverDate = response.headers.get("date");
+        if (!serverDate) return 0;
+        const offset = new Date(serverDate).getTime() - Date.now();
+        return Number.isFinite(offset) ? offset : 0;
+      })
+      .catch(() => 0);
+  }
+  return r2ClockOffsetPromise;
+}
+
+async function createR2Client() {
   const config = requireR2Config();
+  const systemClockOffset = await getR2ClockOffset(config.endpoint);
   return new S3Client({
     region: "auto",
     endpoint: config.endpoint,
+    systemClockOffset,
     credentials: {
       accessKeyId: config.accessKeyId,
       secretAccessKey: config.secretAccessKey,
@@ -163,7 +181,8 @@ export async function createR2UploadSession(input: {
   mediaType: R2MediaType;
 }) {
   const config = requireR2Config();
-  const client = createR2Client();
+  const client = await createR2Client();
+  const signingDate = new Date(Date.now() + await getR2ClockOffset(config.endpoint));
   const key = createR2ObjectKey({ name: input.name, mediaType: input.mediaType });
   const publicUrl = getR2PublicUrl(key);
 
@@ -177,7 +196,7 @@ export async function createR2UploadSession(input: {
         CacheControl: "public, max-age=31536000, immutable",
         Metadata: { originalName: input.name },
       }),
-      { expiresIn: 60 * 15 },
+      { expiresIn: 60 * 15, signingDate },
     );
 
     return {
@@ -214,7 +233,7 @@ export async function createR2UploadSession(input: {
           UploadId: createResult.UploadId,
           PartNumber: part.partNumber,
         }),
-        { expiresIn: 60 * 60 },
+        { expiresIn: 60 * 60, signingDate },
       ),
     })),
   );
@@ -232,7 +251,7 @@ export async function createR2UploadSession(input: {
 
 export async function headR2Object(key: string) {
   const config = requireR2Config();
-  const client = createR2Client();
+  const client = await createR2Client();
   return client.send(new HeadObjectCommand({ Bucket: config.bucketName, Key: key }));
 }
 
@@ -242,7 +261,7 @@ export async function completeR2MultipartUpload(input: {
   parts: R2CompletePartInput[];
 }) {
   const config = requireR2Config();
-  const client = createR2Client();
+  const client = await createR2Client();
   const completedParts: CompletedPart[] = input.parts
     .map((part) => ({
       PartNumber: part.partNumber,
@@ -265,7 +284,7 @@ export async function abortR2MultipartUpload(input: {
   uploadId: string;
 }) {
   const config = requireR2Config();
-  const client = createR2Client();
+  const client = await createR2Client();
 
   await client.send(
     new AbortMultipartUploadCommand({
@@ -278,13 +297,13 @@ export async function abortR2MultipartUpload(input: {
 
 export async function deleteR2Object(key: string) {
   const config = requireR2Config();
-  const client = createR2Client();
+  const client = await createR2Client();
   await client.send(new DeleteObjectCommand({ Bucket: config.bucketName, Key: key }));
 }
 
 export async function getR2Object(key: string, range?: string) {
   const config = requireR2Config();
-  const client = createR2Client();
+  const client = await createR2Client();
   return client.send(
     new GetObjectCommand({
       Bucket: config.bucketName,

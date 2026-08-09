@@ -7,11 +7,8 @@ export function Footer() {
       <div className="container-shell py-12 md:py-16">
         <div className="grid gap-10 md:grid-cols-[1.2fr_1fr_1fr]">
           <div>
-            <Link href="/" className="inline-flex items-baseline gap-1">
-              <span className="font-serif text-3xl text-sahel">Meroe</span>
-              <span className="font-serif text-3xl italic text-papyrus/70">
-                stream
-              </span>
+            <Link href="/" className="font-serif text-3xl text-sahel">
+              Mero<span className="italic text-papyrus/70">Stream</span>
             </Link>
             <p className="mt-5 max-w-sm text-sm leading-7 text-papyrus/62">
               African cinema and live theatre rooted in tradition, speaking to
@@ -44,7 +41,8 @@ export function Footer() {
         </div>
         <div className="fine-line mt-12" />
         <div className="mt-6 flex flex-col gap-3 font-label text-[0.65rem] uppercase tracking-[0.18em] text-papyrus/45 md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} Meroestream</p>
+          <p>© {new Date().getFullYear()} MeroStream</p>
+          <div className="flex flex-wrap gap-x-5 gap-y-2"><Link href="/privacy-cookies-policy" className="hover:text-sahel">Privacy &amp; Cookies</Link><Link href="/sustainability-environmental-policy" className="hover:text-sahel">Sustainability</Link></div>
           <p>Film · Documentary · Theatre · Music</p>
         </div>
       </div>

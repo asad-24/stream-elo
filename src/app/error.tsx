@@ -10,7 +10,7 @@ export default function Error({
     <div className="grid min-h-screen place-items-center bg-obsidian px-6 pt-20">
       <div className="max-w-xl text-center">
         <p className="label">Error</p>
-        <h1 className="mt-4 font-serif text-5xl text-papyrus">The reel broke.</h1>
+        <h1 className="mt-4 font-serif text-4xl text-papyrus">The reel broke.</h1>
         <p className="mt-4 text-papyrus/65">
           Something interrupted this scene. Try again and we will reload the
           experience.

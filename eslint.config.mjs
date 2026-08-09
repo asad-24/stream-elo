@@ -9,6 +9,10 @@ const eslintConfig = defineConfig([
   globalIgnores([
     // Default ignores of eslint-config-next:
     ".next/**",
+    ".next-stale-*/**",
+    ".tmp-drive-artifacts/**",
+    ".tmp-drive-selected/**",
+    ".tmp-hero-videos/**",
     "out/**",
     "build/**",
     "next-env.d.ts",

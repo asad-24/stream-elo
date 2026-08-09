@@ -7,6 +7,7 @@ import {
 } from "next/font/google";
 import { Footer } from "@/components/footer";
 import { Header } from "@/components/header";
+import { CookieConsent } from "@/components/cookie-consent";
 import { contact } from "@/lib/content";
 import "./globals.css";
 
@@ -96,6 +97,7 @@ export default function RootLayout({
         <Header />
         <main id="main">{children}</main>
         <Footer />
+        <CookieConsent />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{

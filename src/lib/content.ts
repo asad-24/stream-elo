@@ -32,6 +32,7 @@ export type Project = {
   video?: VideoSource;
   gallery: string[];
   credits: string[];
+  platforms?: Array<{ name: string; url: string }>;
 };
 
 export const asset = {
@@ -75,6 +76,7 @@ export const navigation = [
   { label: "Portfolio", href: "/portfolio" },
   { label: "Films", href: "/films" },
   { label: "Theatre", href: "/theatre" },
+  { label: "Music", href: "/music" },
   { label: "BTS", href: "/behind-the-scenes" },
   { label: "Contact", href: "/contact" },
 ];

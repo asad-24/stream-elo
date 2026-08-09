@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -10,6 +9,7 @@ import {
 } from "@/lib/content";
 import { StatusBadge } from "@/components/status-badge";
 import { VideoModal } from "@/components/interactive/video-modal";
+import { FittedCoverImage } from "@/components/ui/fitted-cover-image";
 
 const filters: Array<ProjectCategory | "All"> = [
   "All",
@@ -29,12 +29,11 @@ function ProjectCard({ project }: { project: Project }) {
       className="group grid overflow-hidden border border-papyrus/10 bg-papyrus/[0.035] lg:grid-cols-[0.75fr_1fr]"
     >
       <div className="relative aspect-[4/5] overflow-hidden lg:aspect-auto">
-        <Image
+        <FittedCoverImage
           src={project.poster}
           alt={`${project.title} poster`}
-          fill
           sizes="(min-width: 1024px) 34vw, 100vw"
-          className="object-cover transition duration-700 group-hover:scale-105"
+          className="group-hover:scale-[1.02]"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-obsidian/70 via-transparent" />
       </div>
@@ -46,7 +45,7 @@ function ProjectCard({ project }: { project: Project }) {
               {project.category}
             </span>
           </div>
-          <h3 className="mt-5 font-serif text-3xl leading-tight text-papyrus md:text-4xl">
+          <h3 className="mt-5 font-serif text-2xl leading-tight text-papyrus md:text-3xl">
             {project.title}
           </h3>
           <p className="mt-5 text-sm leading-7 text-papyrus/66">

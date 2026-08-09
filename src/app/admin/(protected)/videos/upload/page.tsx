@@ -1,6 +1,7 @@
 import { AdminPage } from "@/components/admin/admin-page";
 import { AdminCard, AdminNotice } from "@/components/admin/admin-widgets";
 import { MediaUploadForm } from "@/components/admin/media-upload-form";
+import { YoutubeVideoForm } from "@/components/admin/youtube-video-form";
 import { getAdminSettingRows } from "@/lib/server/admin-data";
 
 export const dynamic = "force-dynamic";
@@ -14,8 +15,8 @@ export default async function AdminVideoUploadPage() {
   return (
     <AdminPage
       eyebrow="Upload video"
-      title="Cloudflare R2 video upload"
-      intro="This page initiates multipart R2 uploads, displays progress, retries failed parts, and saves video metadata to MongoDB."
+      title="Add a video"
+      intro="Upload a video file to Cloudflare R2, or save a YouTube link directly in MongoDB."
     >
       {missingR2.length ? (
         <AdminNotice tone="warning">
@@ -23,6 +24,11 @@ export default async function AdminVideoUploadPage() {
           account, bucket, credentials, and public base URL, then restart the dev server.
         </AdminNotice>
       ) : null}
+      <div className="mt-6">
+        <AdminCard title="Add from YouTube" eyebrow="MongoDB link">
+          <YoutubeVideoForm />
+        </AdminCard>
+      </div>
       <div className="mt-6">
         <AdminCard title="Upload video file" eyebrow="Cloudflare R2">
           <MediaUploadForm defaultMediaType="video" />

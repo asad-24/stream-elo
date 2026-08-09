@@ -1,19 +1,19 @@
-import Image from "next/image";
-import { type theatreProductions } from "@/lib/content";
+import { type ProjectStatus, type VideoSource } from "@/lib/content";
 import { StatusBadge } from "@/components/status-badge";
+import { VideoModal } from "@/components/interactive/video-modal";
+import { FittedCoverImage } from "@/components/ui/fitted-cover-image";
 
-type TheatreProduction = (typeof theatreProductions)[number];
+type TheatreProduction = { title: string; city: string; country: string; dates: string; status: ProjectStatus; poster: string; description: string; gallery: string[]; video?: VideoSource };
 
 export function TheatreCard({ production }: { production: TheatreProduction }) {
   return (
     <article className="group overflow-hidden border border-papyrus/10 bg-papyrus/[0.035]">
       <div className="relative aspect-[4/3] overflow-hidden">
-        <Image
+        <FittedCoverImage
           src={production.poster}
           alt={`${production.title} poster`}
-          fill
           sizes="(min-width: 1024px) 33vw, 100vw"
-          className="object-cover transition duration-700 group-hover:scale-105"
+          className="group-hover:scale-[1.02]"
         />
       </div>
       <div className="p-6">
@@ -22,8 +22,9 @@ export function TheatreCard({ production }: { production: TheatreProduction }) {
           <span className="font-label text-[0.62rem] uppercase tracking-[0.18em] text-papyrus/45">
             {production.city}, {production.country}
           </span>
+          {production.video ? <VideoModal video={production.video} title={production.title} compact /> : null}
         </div>
-        <h3 className="mt-5 font-serif text-3xl leading-tight text-papyrus">
+        <h3 className="mt-5 font-serif text-2xl leading-tight text-papyrus">
           {production.title}
         </h3>
         <p className="mt-2 text-sm text-sahel">{production.dates}</p>

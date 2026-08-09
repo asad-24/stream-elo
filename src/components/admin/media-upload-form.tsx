@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { UploadCloud } from "lucide-react";
 
 type UploadStep = "idle" | "initiating" | "uploading" | "saving" | "done" | "error";
@@ -57,14 +58,22 @@ async function uploadWithRetry(url: string, body: Blob, contentType?: string) {
     }
   }
 
+  if (lastError instanceof TypeError && lastError.message.toLowerCase().includes("fetch")) {
+    throw new Error("The browser could not reach Cloudflare R2. Add this admin site's origin to the bucket CORS policy and allow PUT with the Content-Type header.");
+  }
   throw lastError ?? new Error("Upload failed.");
 }
 
 export function MediaUploadForm({
   defaultMediaType = "video",
+  lockMediaType = false,
+  onUploaded,
 }: {
   defaultMediaType?: "image" | "video";
+  lockMediaType?: boolean;
+  onUploaded?: (mediaId: string) => void | Promise<void>;
 }) {
+  const router = useRouter();
   const [mediaType, setMediaType] = useState<"image" | "video">(defaultMediaType);
   const [step, setStep] = useState<UploadStep>("idle");
   const [message, setMessage] = useState("");
@@ -72,10 +81,11 @@ export function MediaUploadForm({
 
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    const form = event.currentTarget;
     setMessage("");
     setProgress(0);
 
-    const data = new FormData(event.currentTarget);
+    const data = new FormData(form);
     const file = data.get("file");
     if (!(file instanceof File) || file.size === 0) {
       setStep("error");
@@ -167,9 +177,12 @@ export function MediaUploadForm({
       });
       if (!metadata.ok) throw new Error("Upload finished, but display details could not be saved.");
 
+      await onUploaded?.(initiateResult.mediaId);
+
       setStep("done");
       setMessage(`${file.name} was uploaded to R2 and saved.`);
-      event.currentTarget.reset();
+      form.reset();
+      router.refresh();
     } catch (error) {
       setStep("error");
       setMessage(error instanceof Error ? error.message : "Upload failed.");
@@ -186,6 +199,7 @@ export function MediaUploadForm({
           <select
             name="mediaType"
             value={mediaType}
+            disabled={lockMediaType}
             onChange={(event) => setMediaType(event.target.value as "image" | "video")}
             className="min-h-12 border border-papyrus/15 bg-obsidian px-4 text-papyrus"
           >

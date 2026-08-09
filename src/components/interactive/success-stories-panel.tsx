@@ -1,11 +1,13 @@
 "use client";
 
-import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { successStories } from "@/lib/content";
+import { type VideoSource } from "@/lib/content";
+import { VideoModal } from "@/components/interactive/video-modal";
+import { FittedCoverImage } from "@/components/ui/fitted-cover-image";
 
-type SuccessStory = (typeof successStories)[number];
+type SuccessStory = (typeof successStories)[number] & { video?: VideoSource };
 export function SuccessStoriesPanel({ items = successStories }: { items?: SuccessStory[] }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const active = items[activeIndex] ?? items[0] ?? successStories[0];
@@ -60,18 +62,18 @@ export function SuccessStoriesPanel({ items = successStories }: { items?: Succes
             className="grid md:grid-cols-[0.8fr_1fr]"
           >
             <div className="relative min-h-[24rem]">
-              <Image
+              <FittedCoverImage
                 src={active.image}
                 alt={active.name}
-                fill
+                unoptimized
                 sizes="(min-width: 768px) 42vw, 100vw"
-                className="object-cover"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-obsidian/60 via-transparent" />
+              {active.video ? <div className="absolute inset-0 grid place-items-center"><VideoModal video={active.video} title={active.name} /></div> : null}
             </div>
             <div className="p-7 md:p-10">
               <p className="label">Selected voice</p>
-              <h3 className="mt-4 font-serif text-4xl leading-tight text-papyrus">
+              <h3 className="mt-4 font-serif text-3xl leading-tight text-papyrus">
                 {active.name}
               </h3>
               <p className="mt-3 text-sahel">{active.role}</p>

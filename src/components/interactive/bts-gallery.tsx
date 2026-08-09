@@ -5,8 +5,11 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { btsProjects } from "@/lib/content";
+import { type VideoSource } from "@/lib/content";
+import { VideoModal } from "@/components/interactive/video-modal";
+import { FittedCoverImage } from "@/components/ui/fitted-cover-image";
 
-type BtsGalleryItem = (typeof btsProjects)[number];
+type BtsGalleryItem = { title: string; details: string; media: Array<{ src: string; caption: string; video?: VideoSource }> };
 
 export function BtsGallery({ items = btsProjects }: { items?: BtsGalleryItem[] }) {
   const [projectIndex, setProjectIndex] = useState(0);
@@ -70,29 +73,28 @@ export function BtsGallery({ items = btsProjects }: { items?: BtsGalleryItem[] }
             transition={{ duration: 0.45 }}
           >
             <p className="label">Gallery</p>
-            <h2 className="mt-4 font-serif text-4xl text-papyrus">
+            <h2 className="mt-4 font-serif text-3xl text-papyrus">
               {project.title}
             </h2>
             <p className="mt-4 max-w-2xl text-papyrus/64">{project.details}</p>
             <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {project.media.map((item, index) => (
-                <button
+                <div
                   key={item.src}
-                  type="button"
-                  onClick={() => setMediaIndex(index)}
                   className="group relative aspect-[4/5] overflow-hidden border border-papyrus/10 text-left"
                 >
-                  <Image
+                  <FittedCoverImage
                     src={item.src}
                     alt={item.caption}
-                    fill
                     sizes="(min-width: 1280px) 24vw, (min-width: 640px) 45vw, 100vw"
-                    className="object-cover transition duration-700 group-hover:scale-105"
+                    className="group-hover:scale-[1.02]"
                   />
-                  <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-obsidian p-4 text-sm text-papyrus">
+                  <button type="button" onClick={() => setMediaIndex(index)} className="absolute inset-0" aria-label={`Open ${item.caption}`} />
+                  <span className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-obsidian p-4 text-sm text-papyrus">
                     {item.caption}
                   </span>
-                </button>
+                  {item.video ? <span className="absolute right-4 top-4"><VideoModal video={item.video} title={`${project.title}: ${item.caption}`} compact /></span> : null}
+                </div>
               ))}
             </div>
           </motion.div>
@@ -114,7 +116,7 @@ export function BtsGallery({ items = btsProjects }: { items?: BtsGalleryItem[] }
           >
             <div className="w-full max-w-6xl">
               <div className="mb-4 flex items-center justify-between gap-4">
-                <p className="font-serif text-3xl text-papyrus">
+                <p className="font-serif text-2xl text-papyrus">
                   {activeMedia.caption}
                 </p>
                 <button

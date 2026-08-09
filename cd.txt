@@ -1,0 +1,3 @@
+Artefacts here: https://drive.google.com/drive/folders/1YJcHwuAvvQNeZiT4cnVm_VyTaUSNn2P3
+Edited videos to upload to CDN server are here: https://drive.google.com/drive/folders/1d2zIfC6a4uZNxJNOjQJOCleiN819n4Sx
+There's a copy in reduced 4K and HD. Please test for which works best in quality and performance.

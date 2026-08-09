@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-type MediaOption = { id: string; title: string; mediaType: "image" | "video" };
+type MediaOption = { id: string; title: string; mediaType: "image" | "video"; source?: string };
 type Row = { _id: string; title?: string; name?: string; slug: string; description?: string; status?: string; sortOrder?: number; isActive?: boolean; mediaIds?: string[]; data?: Record<string, unknown>; type?: string };
 export function ContentManager({ resource, initialRows, media }: { resource: string; initialRows: Row[]; media: MediaOption[] }) {
   const router = useRouter(); const [message, setMessage] = useState(""); const [busy, setBusy] = useState(false);

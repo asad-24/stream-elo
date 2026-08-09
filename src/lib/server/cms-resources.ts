@@ -34,6 +34,7 @@ const project = z.object({
   productionDate: z.string().trim().max(80).optional(),
   publicStatus: z.string().trim().max(80).optional(),
   credits: z.array(z.string().trim().max(240)).optional(),
+  platforms: z.array(z.object({ name: z.string().trim().min(1).max(80), url: z.string().trim().url().max(2048) })).optional(),
 });
 
 const category = z.object({

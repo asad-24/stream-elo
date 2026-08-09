@@ -16,7 +16,7 @@ export default function AboutPage() {
       <section className="bg-papyrus pt-36 text-obsidian md:pt-44">
         <div className="container-shell pb-20 md:pb-28">
           <p className="label text-crimson">About Meroestream</p>
-          <h1 className="mt-6 max-w-5xl font-serif text-5xl leading-[0.96] md:text-7xl">
+          <h1 className="mt-6 max-w-5xl font-serif text-4xl leading-[0.96] md:text-6xl">
             More than entertainment:{" "}
             <span className="editorial text-crimson">rewiring culture</span>
           </h1>
@@ -76,7 +76,7 @@ export default function AboutPage() {
             "The audience is local, continental, and diaspora-facing.",
           ].map((item) => (
             <article key={item} className="border border-papyrus/10 p-6">
-              <p className="font-serif text-3xl leading-tight text-papyrus">{item}</p>
+              <p className="font-serif text-2xl leading-tight text-papyrus">{item}</p>
             </article>
           ))}
         </div>

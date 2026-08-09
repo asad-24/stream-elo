@@ -5,7 +5,7 @@ import { siteUrl } from "@/lib/server/env";
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = siteUrl();
   const now = new Date();
-  const staticRoutes = ["", ...navigation.map((item) => item.href)].map((path) => ({
+  const staticRoutes = ["", ...navigation.map((item) => item.href), "/privacy-cookies-policy", "/sustainability-environmental-policy"].map((path) => ({
     url: `${baseUrl}${path}`,
     lastModified: now,
     changeFrequency: "weekly" as const,

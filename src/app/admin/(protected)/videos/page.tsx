@@ -18,21 +18,22 @@ export default async function AdminVideosPage() {
     <AdminPage
       eyebrow="Videos"
       title="Video management"
-      intro="Import, preview, download, archive, and assign R2-backed video records."
+      intro="Manage YouTube links and R2-backed video files from one library."
     >
       {!videos.ok ? <AdminNotice tone="error">{videos.error}</AdminNotice> : null}
       <AdminCard
-        title="R2 video records"
+        title="Video records"
         eyebrow={`${videos.rows.length} videos`}
         action={<AdminLinkButton href="/admin/videos/upload">Upload video</AdminLinkButton>}
       >
         <AdminTable
-          columns={["Title", "Status", "Visibility", "Size", "Stream", "Download"]}
+          columns={["Title", "Source", "Status", "Visibility", "Size", "Open"]}
           rows={videos.rows.map((video) => [
             <div key={`${video.id}-title`}>
               <p className="text-papyrus">{video.title}</p>
               <p className="mt-1 text-xs text-papyrus/40">{video.mimeType}</p>
             </div>,
+            video.source,
             <StatusPill key={`${video.id}-status`} value={video.status} />,
             video.visibility,
             video.sizeLabel,
@@ -42,18 +43,7 @@ export default async function AdminVideosPage() {
                 href={video.publicUrl}
                 className="text-sahel underline-offset-4 hover:underline"
               >
-                Open CDN
-              </a>
-            ) : (
-              "Not linked"
-            ),
-            video.publicUrl ? (
-              <a
-                key={`${video.id}-download`}
-                href={video.publicUrl}
-                className="text-sahel underline-offset-4 hover:underline"
-              >
-                Open file
+                Open video
               </a>
             ) : (
               "Not linked"
